@@ -1,4 +1,4 @@
-package com.manitosdev.gcatcast.ui.main;
+package com.manitosdev.gcatcast.ui.main.ui.main;
 
 import android.os.Bundle;
 
@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
 import com.manitosdev.gcatcast.R;
-import com.manitosdev.gcatcast.ui.main.ui.main.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,9 +19,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        MainSectionPagerAdapter mainSectionPagerAdapter = new MainSectionPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
+        viewPager.setAdapter(mainSectionPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
         FloatingActionButton fab = findViewById(R.id.fab);

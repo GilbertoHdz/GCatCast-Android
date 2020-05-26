@@ -25,25 +25,16 @@
       </formatting-settings>
     </DBN-SQL>
     <JavaCodeStyleSettings>
-      <option name="CLASS_NAMES_IN_JAVADOC" value="2" />
-      <option name="USE_FQ_CLASS_NAMES" value="true" />
+      <option name="CLASS_NAMES_IN_JAVADOC" value="3" />
       <option name="IMPORT_LAYOUT_TABLE">
         <value>
-          <package name="android" withSubpackages="false" static="false" />
           <emptyLine />
-          <package name="androidx" withSubpackages="false" static="false" />
           <emptyLine />
-          <package name="com" withSubpackages="false" static="false" />
           <emptyLine />
-          <package name="junit" withSubpackages="false" static="false" />
           <emptyLine />
-          <package name="net" withSubpackages="false" static="false" />
           <emptyLine />
-          <package name="org" withSubpackages="false" static="false" />
           <emptyLine />
-          <package name="java" withSubpackages="false" static="false" />
           <emptyLine />
-          <package name="javax" withSubpackages="false" static="false" />
           <emptyLine />
           <package name="" withSubpackages="true" static="false" />
           <emptyLine />

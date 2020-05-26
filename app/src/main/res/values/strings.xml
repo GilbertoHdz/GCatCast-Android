@@ -1,6 +1,17 @@
 <resources>
-    <string name="app_name">GCat Cast</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <string name="title_activity_main">MainActivity</string>
+
+    <!-- MAIN -->
+    <string name="app_name" translatable="false">GCat Cast</string>
+    <string name="main_tab_popular">Popular</string>
+    <string name="main_tab_discovery">Discovery</string>
+    <string name="main_tab_subscribed">Subscribed</string>
+
+    <!-- POPULAR -->
+
+    <!-- DISCOVERY -->
+
+    <!-- SUBSCRIBED -->
+
+    <!-- PLAYLIST -->
+
 </resources>
