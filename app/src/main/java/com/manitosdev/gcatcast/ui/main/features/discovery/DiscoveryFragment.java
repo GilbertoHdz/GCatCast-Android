@@ -1,4 +1,4 @@
-package com.manitosdev.gcatcast.ui.main.ui.subscribed;
+package com.manitosdev.gcatcast.ui.main.features.discovery;
 
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -10,24 +10,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.manitosdev.gcatcast.R;
 
-public class SubscribedFragment extends Fragment {
+public class DiscoveryFragment extends Fragment {
 
-  private SubscribedViewModel mViewModel;
+  private DiscoveryViewModel mViewModel;
 
-  public static SubscribedFragment newInstance() {
-    return new SubscribedFragment();
+  public static DiscoveryFragment newInstance() {
+    return new DiscoveryFragment();
   }
 
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                            @Nullable Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.subscribed_fragment, container, false);
+    return inflater.inflate(R.layout.discovery_fragment, container, false);
   }
 
   @Override
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
-    mViewModel = ViewModelProviders.of(this).get(SubscribedViewModel.class);
+    mViewModel = ViewModelProviders.of(this).get(DiscoveryViewModel.class);
     // TODO: Use the ViewModel
   }
 

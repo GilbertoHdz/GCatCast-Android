@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GCat">
         <activity
-            android:name=".ui.main.ui.main.MainActivity">
+            android:name=".ui.main.features.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,4 +1,4 @@
-package com.manitosdev.gcatcast.ui.main.ui.main;
+package com.manitosdev.gcatcast.ui.main.features.main;
 
 import android.content.Context;
 
@@ -9,9 +9,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.manitosdev.gcatcast.R;
-import com.manitosdev.gcatcast.ui.main.ui.discovery.DiscoveryFragment;
-import com.manitosdev.gcatcast.ui.main.ui.popular.PopularFragment;
-import com.manitosdev.gcatcast.ui.main.ui.subscribed.SubscribedFragment;
+import com.manitosdev.gcatcast.ui.main.features.discovery.DiscoveryFragment;
+import com.manitosdev.gcatcast.ui.main.features.popular.PopularFragment;
+import com.manitosdev.gcatcast.ui.main.features.subscribed.SubscribedFragment;
 
 public class MainSectionPagerAdapter extends FragmentPagerAdapter {
 

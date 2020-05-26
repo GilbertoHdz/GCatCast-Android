@@ -1,4 +1,4 @@
-package com.manitosdev.gcatcast.ui.main.ui.popular;
+package com.manitosdev.gcatcast.ui.main.features.popular;
 
 import androidx.lifecycle.ViewModel;
 

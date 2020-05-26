@@ -1,4 +1,4 @@
-package com.manitosdev.gcatcast.ui.main.ui.discovery;
+package com.manitosdev.gcatcast.ui.main.features.discovery;
 
 import androidx.lifecycle.ViewModel;
 

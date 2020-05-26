@@ -1,4 +1,4 @@
-package com.manitosdev.gcatcast.ui.main.ui.subscribed;
+package com.manitosdev.gcatcast.ui.main.features.subscribed;
 
 import androidx.lifecycle.ViewModel;
 

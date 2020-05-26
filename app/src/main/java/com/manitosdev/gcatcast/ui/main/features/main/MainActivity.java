@@ -1,4 +1,4 @@
-package com.manitosdev.gcatcast.ui.main.ui.main;
+package com.manitosdev.gcatcast.ui.main.features.main;
 
 import android.os.Bundle;
 
