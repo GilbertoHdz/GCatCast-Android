@@ -17,7 +17,6 @@ public interface ItunesService {
    *
    * @param term like name of author, album, podcast
    * @param entity like movie, movieArtist, musicVideo tvEpisode or podcast
-   * @param country us, mx, es, etc.
    * @param limit default 50
    * @return
    */
@@ -25,7 +24,6 @@ public interface ItunesService {
   Call<SearchResult> getItunesSearch(
       @Query("term") String term,
       @Query("entity") String entity,
-      @Query("country") String country,
       @Query("limit") Integer limit
   );
 }

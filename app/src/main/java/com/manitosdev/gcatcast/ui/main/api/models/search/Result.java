@@ -2,6 +2,7 @@ package com.manitosdev.gcatcast.ui.main.api.models.search;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import java.util.List;
 
 /**
  * Created by gilbertohdz on 26/05/20.
@@ -101,6 +102,33 @@ public class Result {
   @SerializedName("isStreamable")
   @Expose
   private Boolean isStreamable;
+  @SerializedName("feedUrl")
+  @Expose
+  private String feedUrl;
+  @SerializedName("trackRentalPrice")
+  @Expose
+  private Integer trackRentalPrice;
+  @SerializedName("collectionHdPrice")
+  @Expose
+  private Integer collectionHdPrice;
+  @SerializedName("trackHdPrice")
+  @Expose
+  private Integer trackHdPrice;
+  @SerializedName("trackHdRentalPrice")
+  @Expose
+  private Integer trackHdRentalPrice;
+  @SerializedName("contentAdvisoryRating")
+  @Expose
+  private String contentAdvisoryRating;
+  @SerializedName("artworkUrl600")
+  @Expose
+  private String artworkUrl600;
+  @SerializedName("genreIds")
+  @Expose
+  private List<String> genreIds = null;
+  @SerializedName("genres")
+  @Expose
+  private List<String> genres = null;
 
   public String getWrapperType() {
     return wrapperType;
@@ -348,5 +376,85 @@ public class Result {
 
   public void setIsStreamable(Boolean isStreamable) {
     this.isStreamable = isStreamable;
+  }
+
+  public Boolean getStreamable() {
+    return isStreamable;
+  }
+
+  public void setStreamable(Boolean streamable) {
+    isStreamable = streamable;
+  }
+
+  public String getFeedUrl() {
+    return feedUrl;
+  }
+
+  public void setFeedUrl(String feedUrl) {
+    this.feedUrl = feedUrl;
+  }
+
+  public Integer getTrackRentalPrice() {
+    return trackRentalPrice;
+  }
+
+  public void setTrackRentalPrice(Integer trackRentalPrice) {
+    this.trackRentalPrice = trackRentalPrice;
+  }
+
+  public Integer getCollectionHdPrice() {
+    return collectionHdPrice;
+  }
+
+  public void setCollectionHdPrice(Integer collectionHdPrice) {
+    this.collectionHdPrice = collectionHdPrice;
+  }
+
+  public Integer getTrackHdPrice() {
+    return trackHdPrice;
+  }
+
+  public void setTrackHdPrice(Integer trackHdPrice) {
+    this.trackHdPrice = trackHdPrice;
+  }
+
+  public Integer getTrackHdRentalPrice() {
+    return trackHdRentalPrice;
+  }
+
+  public void setTrackHdRentalPrice(Integer trackHdRentalPrice) {
+    this.trackHdRentalPrice = trackHdRentalPrice;
+  }
+
+  public String getContentAdvisoryRating() {
+    return contentAdvisoryRating;
+  }
+
+  public void setContentAdvisoryRating(String contentAdvisoryRating) {
+    this.contentAdvisoryRating = contentAdvisoryRating;
+  }
+
+  public String getArtworkUrl600() {
+    return artworkUrl600;
+  }
+
+  public void setArtworkUrl600(String artworkUrl600) {
+    this.artworkUrl600 = artworkUrl600;
+  }
+
+  public List<String> getGenreIds() {
+    return genreIds;
+  }
+
+  public void setGenreIds(List<String> genreIds) {
+    this.genreIds = genreIds;
+  }
+
+  public List<String> getGenres() {
+    return genres;
+  }
+
+  public void setGenres(List<String> genres) {
+    this.genres = genres;
   }
 }

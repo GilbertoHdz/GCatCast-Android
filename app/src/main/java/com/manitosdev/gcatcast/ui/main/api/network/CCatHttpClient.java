@@ -1,11 +1,13 @@
 package com.manitosdev.gcatcast.ui.main.api.network;
 
 import com.manitosdev.gcatcast.ui.main.api.services.ItunesService;
+import com.manitosdev.gcatcast.ui.main.api.services.RssService;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 /**
  * Created by gilbertohdz on 25/05/20.
@@ -37,7 +39,19 @@ public class CCatHttpClient {
         .build();
   }
 
+  public Retrofit provideRetrofitXml(String url) {
+    return new Retrofit.Builder()
+        .baseUrl(url)
+        .client(provideClient())
+        .addConverterFactory(SimpleXmlConverterFactory.create())
+        .build();
+  }
+
   public ItunesService provideItunesService() {
     return provideRetrofit(itunesUrl).create(ItunesService.class);
+  }
+
+  public RssService provideRssService(String baseUrl) {
+    return provideRetrofitXml(baseUrl).create(RssService.class);
   }
 }
