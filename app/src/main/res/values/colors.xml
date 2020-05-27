@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Theme colors -->
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC6</color>
-    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">@color/colorPrimary</color>
+    <color name="colorAccent">#CACAD9</color>
+    <color name="textColorPrimary">#202226</color>
+
     <color name="toolbarIconColor">@color/textColorPrimary</color>
-    <color name="loginPageBackgroundColor">#FFFFFF</color>
-    <color name="productGridBackgroundColor">#FFFBFA</color>
-    <color name="textInputOutlineColor">#03DAC6</color>
+    <color name="loginPageBackgroundColor">@color/textColorPrimary</color>
+    <color name="itemGridBackgroundColor">@color/colorAccent</color>
+    <color name="textInputOutlineColor">@color/textColorPrimary</color>
 
     <!-- Additional colors -->
     <color name="colorBackground">#FFFFFF</color>
