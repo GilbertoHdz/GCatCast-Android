@@ -43,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
-        testApiServices();
     }
 
     private void testApiServices() {

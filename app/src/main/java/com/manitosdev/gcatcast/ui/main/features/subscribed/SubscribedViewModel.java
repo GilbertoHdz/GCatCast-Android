@@ -1,7 +1,12 @@
 package com.manitosdev.gcatcast.ui.main.features.subscribed;
 
-import androidx.lifecycle.ViewModel;
+import android.app.Application;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 
-public class SubscribedViewModel extends ViewModel {
-  // TODO: Implement the ViewModel
+public class SubscribedViewModel extends AndroidViewModel {
+
+  public SubscribedViewModel(@NonNull Application application) {
+    super(application);
+  }
 }
