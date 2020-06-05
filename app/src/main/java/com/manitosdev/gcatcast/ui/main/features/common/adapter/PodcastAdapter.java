@@ -1,9 +1,12 @@
 package com.manitosdev.gcatcast.ui.main.features.common.adapter;
 
+import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import com.manitosdev.gcatcast.R;
@@ -18,10 +21,20 @@ import java.util.List;
  */
 public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+  private Activity mContext;
+
+  public PodcastAdapter(Activity mContext) {
+    this.mContext = mContext;
+  }
+
   private final int SMALL_ITEM = 0;
   private final int LARGE_ITEM = 1;
 
-  private ArrayList<PodcastData> podcastData;
+  private ArrayList<PodcastData> podcastData = new ArrayList<>();
+
+  public interface ItemActionClicked {
+    void onItemClicked(String rssUrl);
+  }
 
   @NonNull
   @Override
@@ -30,11 +43,11 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     RecyclerView.ViewHolder vh = null;
     switch (viewType) {
       case SMALL_ITEM:
-        _v = (ConstraintLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.common_item_podcast_small_detail, parent, false);
+        _v = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.common_item_podcast_small_detail, parent, false);
         vh = new SmallPodcastViewHolder(_v);
         break;
       case LARGE_ITEM:
-        _v = (ConstraintLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.common_item_podcast_small_detail, parent, false);
+        _v = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.common_item_podcast_large_detail, parent, false);
         vh=  new LargePodcastViewHolder(_v);
         break;
       default:
@@ -48,11 +61,13 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
     if (holder instanceof SmallPodcastViewHolder) {
       ((SmallPodcastViewHolder) holder).bind(
-          (SmPodcast) podcastData.get(position)
+          (SmPodcast) podcastData.get(position),
+          clickObserver()
       );
     } else if (holder instanceof LargePodcastViewHolder) {
       ((LargePodcastViewHolder) holder).bind(
-          (LgPodcast) podcastData.get(position)
+          (LgPodcast) podcastData.get(position),
+          clickObserver()
       );
     } else {
       throw new IllegalStateException("bind holder exception by: " + holder.getClass().getSimpleName());
@@ -80,5 +95,14 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     podcastData.addAll(items);
 
     notifyDataSetChanged();
+  }
+
+  public ItemActionClicked clickObserver() {
+    return new ItemActionClicked() {
+      @Override
+      public void onItemClicked(String rssUrl) {
+        Log.i("RSS_URL", rssUrl);
+      }
+    };
   }
 }

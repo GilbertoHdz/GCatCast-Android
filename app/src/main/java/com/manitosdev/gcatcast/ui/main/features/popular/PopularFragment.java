@@ -14,9 +14,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.manitosdev.gcatcast.R;
 import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
+import com.manitosdev.gcatcast.ui.main.api.models.search.Result;
 import com.manitosdev.gcatcast.ui.main.api.models.search.SearchResult;
 import com.manitosdev.gcatcast.ui.main.api.repository.ItunesRepository;
 import com.manitosdev.gcatcast.ui.main.features.common.adapter.PodcastAdapter;
+import com.manitosdev.gcatcast.ui.main.features.common.models.LgPodcast;
+import com.manitosdev.gcatcast.ui.main.features.common.models.PodcastData;
+import com.manitosdev.gcatcast.ui.main.features.common.models.SmPodcast;
+import java.util.ArrayList;
 
 public class PopularFragment extends Fragment {
 
@@ -25,7 +30,8 @@ public class PopularFragment extends Fragment {
   private RecyclerView rvTopPodcast;
   private RecyclerView rvBodyPodcast;
 
-  private PodcastAdapter podcastAdapter = new PodcastAdapter();
+  private PodcastAdapter smPodcastAdapter;
+  private PodcastAdapter lgPodcastAdapter;
 
   public static PopularFragment newInstance() {
     return new PopularFragment();
@@ -41,13 +47,14 @@ public class PopularFragment extends Fragment {
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     mViewModel = ViewModelProviders.of(this).get(PopularViewModel.class);
-
     mViewModel.getSearchResultMutableLiveData().observe(this.getViewLifecycleOwner(), podcastOberver());
   }
 
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    smPodcastAdapter = new PodcastAdapter(requireActivity());
+    lgPodcastAdapter = new PodcastAdapter(requireActivity());
     initializeRecyclers(view);
 
     ItunesRepository.getInstance().loadPodcasts("g");
@@ -60,21 +67,34 @@ public class PopularFragment extends Fragment {
     rvTopPodcast = (RecyclerView) view.findViewById(R.id.popularTopSectionRecycler);
     rvTopPodcast.setHasFixedSize(true);
     rvTopPodcast.setLayoutManager(layoutManager);
-    rvTopPodcast.setAdapter(podcastAdapter);
+    rvTopPodcast.setAdapter(smPodcastAdapter);
 
     layoutManager = new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false);
     rvBodyPodcast = (RecyclerView) view.findViewById(R.id.popularBodySectionRecycler);
     rvBodyPodcast.setHasFixedSize(true);
     rvBodyPodcast.setLayoutManager(layoutManager);
-    rvBodyPodcast.setAdapter(podcastAdapter);
+    rvBodyPodcast.setAdapter(lgPodcastAdapter);
   }
 
   private Observer<ApiResult<SearchResult>> podcastOberver() {
     return new Observer<ApiResult<SearchResult>>() {
       @Override
       public void onChanged(ApiResult<SearchResult> result) {
+        ArrayList<PodcastData> smItems = new ArrayList<>();
+        ArrayList<PodcastData> lgItems = new ArrayList<>();
 
-        Log.i("LIVEDATA", "The livedata changed: "+ result.getResult().getResultCount());
+        for (int i = 0; i < result.getResult().getResultCount(); i++) {
+          Result item = result.getResult().getResults().get(i);
+
+          if (i <= 5) {
+            smItems.add(new SmPodcast(item.getArtistName(), null, item.getArtworkUrl60(), false, false, item.getFeedUrl()));
+          } else {
+            lgItems.add(new LgPodcast(item.getArtistName(), "", item.getArtworkUrl60(), false, true, item.getFeedUrl()));
+          }
+        }
+
+        smPodcastAdapter.updateData(smItems);
+        lgPodcastAdapter.updateData(lgItems);
       }
     };
   }

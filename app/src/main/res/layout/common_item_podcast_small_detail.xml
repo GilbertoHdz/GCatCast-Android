@@ -1,45 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_margin="4dp">
 
-    <Button
-        android:id="@+id/common_item_podcast_sm_marker"
-        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/common_item_podcast_sm_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:icon="@drawable/ic_turned_in_not_black_24dp"
-        app:layout_constraintEnd_toEndOf="@id/common_item_podcast_sm_thumbnail"
-        app:layout_constraintTop_toTopOf="@id/common_item_podcast_sm_thumbnail" />
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/common_item_podcast_sm_thumbnail"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@id/common_item_podcast_sm_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_launcher" />
+        <ImageView
+            android:id="@+id/common_item_podcast_sm_thumbnail"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="4dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toTopOf="@id/common_item_podcast_sm_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/ic_launcher" />
 
-    <TextView
-        android:id="@+id/common_item_podcast_sm_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="12dp"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/common_item_podcast_sm_thumbnail"
-        app:layout_constraintStart_toStartOf="@id/common_item_podcast_sm_thumbnail"
-        app:layout_constraintTop_toBottomOf="@id/common_item_podcast_sm_thumbnail" />
+        <ImageView
+            android:id="@+id/common_item_podcast_sm_marker"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_turned_in_not_black_24dp"
+            app:layout_constraintEnd_toEndOf="@id/common_item_podcast_sm_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/common_item_podcast_sm_thumbnail" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/common_item_podcast_sm_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/common_item_podcast_sm_thumbnail"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/common_item_podcast_sm_thumbnail"
+            app:layout_constraintTop_toBottomOf="@id/common_item_podcast_sm_thumbnail"
+            tools:text="Gilinho el gran gato con botas" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
