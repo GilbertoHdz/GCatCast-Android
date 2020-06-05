@@ -3,10 +3,14 @@ package com.manitosdev.gcatcast.ui.main.api.repository;
 import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
+import com.manitosdev.gcatcast.ui.main.api.models.search.RssFeed;
 import com.manitosdev.gcatcast.ui.main.api.models.search.SearchResult;
 import com.manitosdev.gcatcast.ui.main.api.network.AppExecutors;
 import com.manitosdev.gcatcast.ui.main.api.network.CCatHttpClient;
 import com.manitosdev.gcatcast.ui.main.api.services.ItunesService;
+import com.manitosdev.gcatcast.ui.main.api.services.RssService;
+import java.net.MalformedURLException;
+import java.net.URL;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,7 +41,12 @@ public class ItunesRepository {
     return searchResultMutableLiveData;
   }
 
-  public void loadPopulars(final String term) {
+  private MutableLiveData<ApiResult<RssFeed>> _rssFeedMutableLiveData = new MutableLiveData<>();
+  public MutableLiveData<ApiResult<RssFeed>> getRssFeedMutableLiveData() {
+    return _rssFeedMutableLiveData;
+  }
+
+  public void loadPodcasts(final String term) {
     AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
       @Override
       public void run() {
@@ -71,6 +80,52 @@ public class ItunesRepository {
             ApiResult<SearchResult> result = new ApiResult<>(null, null, t);
             searchResultMutableLiveData.postValue(result);
             Log.i("GIL_", "Error" + t.getMessage());
+          }
+        });
+      }
+    });
+  }
+
+  public void loadFeedFromRss(final String feedUrl) {
+    AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
+      @Override
+      public void run() {
+
+        URL url = null;
+        try {
+          url = new URL(feedUrl);
+        } catch (MalformedURLException e) {
+          ApiResult<RssFeed> result = new ApiResult<>(null, "Error: malformed url for rss feed", null);
+          _rssFeedMutableLiveData.postValue(result);
+          e.printStackTrace();
+        }
+        String baseUrl = url.getProtocol() + "://" + url.getHost() + "/";
+
+
+        RssService service = httpClient.provideRssService(baseUrl);
+
+        Call<RssFeed> feedCall = service.getRssFeed(url.getPath().replace("/", ""));
+
+        feedCall.enqueue(new Callback<RssFeed>() {
+          @Override
+          public void onResponse(Call<RssFeed> call, Response<RssFeed> response) {
+            if (!response.isSuccessful()) {
+              ApiResult<RssFeed> result = new ApiResult<>(null, "Error: " + response.code(), null);
+              _rssFeedMutableLiveData.postValue(result);
+              Log.i("GIL_RSS", "Error" + response.code());
+            } else {
+              RssFeed rssBody = response.body();
+              ApiResult<RssFeed> result = new ApiResult<>(rssBody, null, null);
+              _rssFeedMutableLiveData.postValue(result);
+              Log.i("GIL_RSS", "Result size" + rssBody.getChannel().getmTitle());
+            }
+          }
+
+          @Override
+          public void onFailure(Call<RssFeed> call, Throwable t) {
+            ApiResult<RssFeed> result = new ApiResult<>(null, null, t);
+            _rssFeedMutableLiveData.postValue(result);
+            Log.i("GIL_RSS", "Error" + t.getMessage());
           }
         });
       }
