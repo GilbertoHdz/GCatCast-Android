@@ -1,11 +1,14 @@
 package com.manitosdev.gcatcast.ui.main.features.common.adapter;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
+import com.bumptech.glide.Glide;
 import com.manitosdev.gcatcast.R;
 import com.manitosdev.gcatcast.ui.main.features.common.models.SmPodcast;
 
@@ -18,9 +21,11 @@ public class SmallPodcastViewHolder extends RecyclerView.ViewHolder {
   private ImageView btnMarker;
   private TextView name;
   private ConstraintLayout viewContainer;
+  private Context mContext;
 
   public SmallPodcastViewHolder(@NonNull View itemView) {
     super(itemView);
+    mContext = itemView.getContext();
     thumbnail = (ImageView) itemView.findViewById(R.id.common_item_podcast_sm_thumbnail);
     btnMarker = (ImageView) itemView.findViewById(R.id.common_item_podcast_sm_marker);
     name = (TextView) itemView.findViewById(R.id.common_item_podcast_sm_name);
@@ -29,6 +34,7 @@ public class SmallPodcastViewHolder extends RecyclerView.ViewHolder {
 
   void bind(final SmPodcast data, final PodcastAdapter.ItemActionClicked action) {
     name.setText(data.getName());
+    loadThumbnail(data.getUrlImg());
 
     viewContainer.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -36,5 +42,17 @@ public class SmallPodcastViewHolder extends RecyclerView.ViewHolder {
         action.onItemClicked(data.getRssUrl());
       }
     });
+  }
+
+  private void loadThumbnail(String thumbnailUrl) {
+    CircularProgressDrawable progressDrawable = new CircularProgressDrawable(mContext);
+    progressDrawable.setStrokeWidth(5f);
+    progressDrawable.setCenterRadius(15f);
+    progressDrawable.start();
+    Glide
+        .with(mContext)
+        .load(thumbnailUrl)
+        .placeholder(progressDrawable)
+        .into(thumbnail);
   }
 }

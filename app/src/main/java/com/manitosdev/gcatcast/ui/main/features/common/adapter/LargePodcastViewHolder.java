@@ -1,11 +1,14 @@
 package com.manitosdev.gcatcast.ui.main.features.common.adapter;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
+import com.bumptech.glide.Glide;
 import com.manitosdev.gcatcast.R;
 import com.manitosdev.gcatcast.ui.main.features.common.models.LgPodcast;
 
@@ -20,9 +23,11 @@ public class LargePodcastViewHolder extends RecyclerView.ViewHolder {
   private TextView name;
   private TextView desc;
   private ConstraintLayout viewContainer;
+  private Context mContext;
 
   public LargePodcastViewHolder(@NonNull View itemView) {
     super(itemView);
+    mContext = itemView.getContext();
     thumbnail = (ImageView) itemView.findViewById(R.id.common_item_podcast_lg_thumbnail);
     btnInfo = (ImageView) itemView.findViewById(R.id.common_item_podcast_lg_info);
     btnMarker = (ImageView) itemView.findViewById(R.id.common_item_podcast_lg_marker);
@@ -34,6 +39,7 @@ public class LargePodcastViewHolder extends RecyclerView.ViewHolder {
   void bind(final LgPodcast data, final PodcastAdapter.ItemActionClicked action) {
     name.setText(data.getName());
     desc.setText(data.getDescription());
+    loadThumbnail(data.getUrlImg());
 
     viewContainer.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -41,5 +47,17 @@ public class LargePodcastViewHolder extends RecyclerView.ViewHolder {
         action.onItemClicked(data.getRssUrl());
       }
     });
+  }
+
+  private void loadThumbnail(String thumbnailUrl) {
+    CircularProgressDrawable progressDrawable = new CircularProgressDrawable(mContext);
+    progressDrawable.setStrokeWidth(5f);
+    progressDrawable.setCenterRadius(15f);
+    progressDrawable.start();
+    Glide
+        .with(mContext)
+        .load(thumbnailUrl)
+        .placeholder(progressDrawable)
+        .into(thumbnail);
   }
 }

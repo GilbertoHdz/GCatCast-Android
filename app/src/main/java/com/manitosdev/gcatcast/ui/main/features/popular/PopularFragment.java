@@ -1,6 +1,5 @@
 package com.manitosdev.gcatcast.ui.main.features.popular;
 
-import android.util.Log;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -87,9 +86,9 @@ public class PopularFragment extends Fragment {
           Result item = result.getResult().getResults().get(i);
 
           if (i <= 5) {
-            smItems.add(new SmPodcast(item.getArtistName(), null, item.getArtworkUrl60(), false, false, item.getFeedUrl()));
+            smItems.add(new SmPodcast(item.getArtistName(), null, item.getArtworkUrl100(), false, false, item.getFeedUrl()));
           } else {
-            lgItems.add(new LgPodcast(item.getArtistName(), "", item.getArtworkUrl60(), false, true, item.getFeedUrl()));
+            lgItems.add(new LgPodcast(item.getArtistName(), "", item.getArtworkUrl100(), false, true, item.getFeedUrl()));
           }
         }
 
