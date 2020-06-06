@@ -20,11 +20,12 @@ import com.manitosdev.gcatcast.ui.main.features.common.adapter.PodcastAdapter;
 import com.manitosdev.gcatcast.ui.main.features.common.models.LgPodcast;
 import com.manitosdev.gcatcast.ui.main.features.common.models.PodcastData;
 import com.manitosdev.gcatcast.ui.main.features.common.models.SmPodcast;
+import com.manitosdev.gcatcast.ui.main.features.main.MainViewModel;
 import java.util.ArrayList;
 
 public class PopularFragment extends Fragment {
 
-  private PopularViewModel mViewModel;
+  private MainViewModel mMainViewModel;
 
   private RecyclerView rvTopPodcast;
   private RecyclerView rvBodyPodcast;
@@ -45,8 +46,8 @@ public class PopularFragment extends Fragment {
   @Override
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
-    mViewModel = ViewModelProviders.of(this).get(PopularViewModel.class);
-    mViewModel.getSearchResultMutableLiveData().observe(this.getViewLifecycleOwner(), podcastOberver());
+    mMainViewModel = ViewModelProviders.of(requireActivity()).get(MainViewModel.class);
+    mMainViewModel.getSearchResultMutableLiveData().observe(this.getViewLifecycleOwner(), podcastOberver());
   }
 
   @Override
@@ -56,7 +57,7 @@ public class PopularFragment extends Fragment {
     lgPodcastAdapter = new PodcastAdapter(requireActivity());
     initializeRecyclers(view);
 
-    ItunesRepository.getInstance().loadPodcasts("g");
+    ItunesRepository.getInstance().loadPodcasts("popular");
   }
 
   private void initializeRecyclers(@NonNull View view) {
