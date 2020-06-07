@@ -16,6 +16,7 @@ import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
 import com.manitosdev.gcatcast.ui.main.api.models.search.Result;
 import com.manitosdev.gcatcast.ui.main.api.models.search.SearchResult;
 import com.manitosdev.gcatcast.ui.main.api.repository.ItunesRepository;
+import com.manitosdev.gcatcast.ui.main.db.AppDatabase;
 import com.manitosdev.gcatcast.ui.main.features.common.adapter.PodcastAdapter;
 import com.manitosdev.gcatcast.ui.main.features.common.models.LgPodcast;
 import com.manitosdev.gcatcast.ui.main.features.common.models.PodcastData;
@@ -32,6 +33,8 @@ public class PopularFragment extends Fragment {
 
   private PodcastAdapter smPodcastAdapter;
   private PodcastAdapter lgPodcastAdapter;
+
+  private AppDatabase mDb;
 
   public static PopularFragment newInstance() {
     return new PopularFragment();
@@ -53,8 +56,9 @@ public class PopularFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    smPodcastAdapter = new PodcastAdapter(requireActivity());
-    lgPodcastAdapter = new PodcastAdapter(requireActivity());
+    mDb = AppDatabase.getInstance(requireActivity());
+    smPodcastAdapter = new PodcastAdapter(requireActivity(), mDb);
+    lgPodcastAdapter = new PodcastAdapter(requireActivity(), mDb);
     initializeRecyclers(view);
 
     ItunesRepository.getInstance().loadPodcasts("popular");

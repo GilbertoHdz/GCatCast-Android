@@ -1,5 +1,7 @@
 package com.manitosdev.gcatcast.ui.main.features.common.models;
 
+import com.manitosdev.gcatcast.ui.main.db.entities.PodCastEntity;
+
 /**
  * Created by gilbertohdz on 02/06/20.
  */
@@ -62,5 +64,9 @@ public class PodcastData {
 
   public void setSaved(boolean saved) {
     isSaved = saved;
+  }
+
+  public PodCastEntity transformToPodCEntity() {
+    return new PodCastEntity(this.trackId, this.name, this.urlImg, this.rssUrl);
   }
 }

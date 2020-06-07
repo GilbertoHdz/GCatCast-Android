@@ -32,7 +32,7 @@
             style="@style/Widget.App.Button.OutlinedButton.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_turned_in_not_black_24dp"
+            android:tag="false"
             app:layout_constraintEnd_toEndOf="@id/common_item_podcast_sm_thumbnail"
             app:layout_constraintTop_toTopOf="@id/common_item_podcast_sm_thumbnail" />
 
@@ -43,7 +43,7 @@
             android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:lines="1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/common_item_podcast_sm_thumbnail"

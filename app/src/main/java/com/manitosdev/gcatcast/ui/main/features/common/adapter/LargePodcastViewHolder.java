@@ -19,7 +19,7 @@ public class LargePodcastViewHolder extends RecyclerView.ViewHolder {
 
   private ImageView thumbnail;
   private ImageView btnInfo;
-  private ImageView btnMarker;
+  private final ImageView btnMarker;
   private TextView name;
   private TextView desc;
   private ConstraintLayout viewContainer;
@@ -39,14 +39,41 @@ public class LargePodcastViewHolder extends RecyclerView.ViewHolder {
   void bind(final LgPodcast data, final PodcastAdapter.ItemActionClicked action) {
     name.setText(data.getName());
     desc.setText(data.getDescription());
+    btnMarker.setVisibility(data.isHasMarkerIcon() ? View.VISIBLE : View.INVISIBLE);
+    btnMarker.setTag("" + data.isSaved());
+    setMarkerIcon(data.isSaved());
+    btnInfo.setVisibility(data.isHasInfoIcon() ? View.VISIBLE : View.INVISIBLE);
     loadThumbnail(data.getUrlImg());
 
     viewContainer.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        action.onItemClicked(data.getRssUrl());
+        action.onItemClicked(data);
       }
     });
+
+    btnMarker.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        boolean isMarked = Boolean.getBoolean((String) btnMarker.getTag());
+        btnMarker.setTag(""+!isMarked);
+
+        setMarkerIcon(!isMarked);
+        action.markerClicked(data);
+      }
+    });
+
+    btnInfo.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        action.infoClicked(data);
+      }
+    });
+  }
+
+  private void setMarkerIcon(boolean isMarked) {
+    int icon = isMarked ?  R.drawable.ic_turned_in_black_24dp : R.drawable.ic_turned_in_not_black_24dp;
+    btnMarker.setImageDrawable(mContext.getResources().getDrawable(icon));
   }
 
   private void loadThumbnail(String thumbnailUrl) {

@@ -16,6 +16,7 @@ import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
 import com.manitosdev.gcatcast.ui.main.api.models.search.Result;
 import com.manitosdev.gcatcast.ui.main.api.models.search.SearchResult;
 import com.manitosdev.gcatcast.ui.main.api.repository.ItunesRepository;
+import com.manitosdev.gcatcast.ui.main.db.AppDatabase;
 import com.manitosdev.gcatcast.ui.main.features.common.adapter.PodcastAdapter;
 import com.manitosdev.gcatcast.ui.main.features.common.models.CategoryDivider;
 import com.manitosdev.gcatcast.ui.main.features.common.models.PodcastData;
@@ -32,6 +33,8 @@ public class DiscoveryFragment extends Fragment {
 
   private RecyclerView mCategoryRecycler;
   private PodcastAdapter mDiscoveryAdapter;
+
+  private AppDatabase mDb;
 
   public static DiscoveryFragment newInstance() {
     return new DiscoveryFragment();
@@ -53,7 +56,8 @@ public class DiscoveryFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    mDiscoveryAdapter = new PodcastAdapter(requireActivity());
+    mDb = AppDatabase.getInstance(requireActivity());
+    mDiscoveryAdapter = new PodcastAdapter(requireActivity(), mDb);
     initializeRecyler(view);
 
     ItunesRepository.getInstance().loadPodcasts("category");
@@ -101,7 +105,7 @@ public class DiscoveryFragment extends Fragment {
         for (Map.Entry<String, List<Result>> groups : map.entrySet()) {
           categories.add(new CategoryDivider(0, groups.getKey(), null, null, false, false, null));
           for (Result item : groups.getValue()) {
-            categories.add(new SmPodcast(item.getCollectionId(), item.getArtistName(), null, item.getArtworkUrl100(), false, false, item.getFeedUrl()));
+            categories.add(new SmPodcast(item.getCollectionId(), item.getArtistName(), null, item.getArtworkUrl100(), false, true, item.getFeedUrl()));
           }
         }
 

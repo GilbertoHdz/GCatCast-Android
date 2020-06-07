@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import com.manitosdev.gcatcast.ui.main.db.dao.PodCastDao;
 import com.manitosdev.gcatcast.ui.main.db.entities.PodCastEntity;
 
 /**
@@ -35,4 +36,6 @@ public abstract class AppDatabase extends RoomDatabase {
     Log.d(LOG_TAG, "Getting the database instance");
     return sInstance;
   }
+
+  public abstract PodCastDao podCastDao();
 }

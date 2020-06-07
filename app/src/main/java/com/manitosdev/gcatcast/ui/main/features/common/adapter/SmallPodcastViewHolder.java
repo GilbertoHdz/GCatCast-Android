@@ -35,13 +35,30 @@ public class SmallPodcastViewHolder extends RecyclerView.ViewHolder {
   void bind(final SmPodcast data, final PodcastAdapter.ItemActionClicked action) {
     name.setText(data.getName());
     loadThumbnail(data.getUrlImg());
+    btnMarker.setVisibility(data.isHasMarkerIcon() ? View.VISIBLE : View.INVISIBLE);
+    btnMarker.setTag("" + data.isSaved());
+    setMarkerIcon(data.isSaved());
 
     viewContainer.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        action.onItemClicked(data.getRssUrl());
+        action.onItemClicked(data);
       }
     });
+    btnMarker.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        boolean isMarked = Boolean.getBoolean((String) btnMarker.getTag());
+        btnMarker.setTag(""+!isMarked);
+
+        setMarkerIcon(!isMarked);
+        action.markerClicked(data);      }
+    });
+  }
+
+  private void setMarkerIcon(boolean isMarked) {
+    int icon = isMarked ?  R.drawable.ic_turned_in_black_24dp : R.drawable.ic_turned_in_not_black_24dp;
+    btnMarker.setImageDrawable(mContext.getResources().getDrawable(icon));
   }
 
   private void loadThumbnail(String thumbnailUrl) {

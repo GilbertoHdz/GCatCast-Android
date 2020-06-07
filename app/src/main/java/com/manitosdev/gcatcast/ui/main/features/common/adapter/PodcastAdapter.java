@@ -8,9 +8,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import com.manitosdev.gcatcast.R;
+import com.manitosdev.gcatcast.ui.main.api.network.AppExecutors;
+import com.manitosdev.gcatcast.ui.main.db.AppDatabase;
 import com.manitosdev.gcatcast.ui.main.features.common.models.CategoryDivider;
 import com.manitosdev.gcatcast.ui.main.features.common.models.LgPodcast;
 import com.manitosdev.gcatcast.ui.main.features.common.models.PodcastData;
@@ -24,9 +25,11 @@ import java.util.List;
 public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
   private Activity mContext;
+  private AppDatabase mDb;
 
-  public PodcastAdapter(Activity mContext) {
+  public PodcastAdapter(Activity mContext, AppDatabase appDatabase) {
     this.mContext = mContext;
+    this.mDb = appDatabase;
   }
 
   public  static final int SMALL_ITEM = 0;
@@ -36,7 +39,9 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   private ArrayList<PodcastData> podcastData = new ArrayList<>();
 
   public interface ItemActionClicked {
-    void onItemClicked(String rssUrl);
+    void onItemClicked(PodcastData podcast);
+    void markerClicked(PodcastData podcast);
+    void infoClicked(PodcastData podcast);
   }
 
   @NonNull
@@ -121,8 +126,27 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   public ItemActionClicked clickObserver() {
     return new ItemActionClicked() {
       @Override
-      public void onItemClicked(String rssUrl) {
-        Log.i("RSS_URL", rssUrl);
+      public void onItemClicked(PodcastData podcast) {
+        Log.i("RSS_URL", podcast.getRssUrl());
+      }
+
+      @Override
+      public void markerClicked(final PodcastData podcast) {
+        AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+          @Override
+          public void run() {
+            if (podcast.isSaved()) {
+              mDb.podCastDao().deletePodCast(podcast.transformToPodCEntity());
+            } else {
+              mDb.podCastDao().insertPodCast(podcast.transformToPodCEntity());
+            }
+          }
+        });
+      }
+
+      @Override
+      public void infoClicked(PodcastData podcast) {
+        // TODO(PENDING) here we will create a new popup screen with podcast or track description
       }
     };
   }
