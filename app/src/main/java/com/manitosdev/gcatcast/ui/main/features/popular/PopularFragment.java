@@ -87,9 +87,9 @@ public class PopularFragment extends Fragment {
           Result item = result.getResult().getResults().get(i);
 
           if (i <= 5) {
-            smItems.add(new SmPodcast(item.getArtistName(), null, item.getArtworkUrl100(), false, false, item.getFeedUrl()));
+            smItems.add(new SmPodcast(item.getCollectionId(), item.getArtistName(), null, item.getArtworkUrl100(), false, false, item.getFeedUrl()));
           } else {
-            lgItems.add(new LgPodcast(item.getArtistName(), "", item.getArtworkUrl100(), false, true, item.getFeedUrl()));
+            lgItems.add(new LgPodcast(item.getCollectionId(), item.getArtistName(), "", item.getArtworkUrl100(), false, true, item.getFeedUrl()));
           }
         }
 

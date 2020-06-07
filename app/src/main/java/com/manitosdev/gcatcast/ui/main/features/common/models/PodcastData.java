@@ -4,6 +4,8 @@ package com.manitosdev.gcatcast.ui.main.features.common.models;
  * Created by gilbertohdz on 02/06/20.
  */
 public class PodcastData {
+
+  private int trackId;
   private String name;
   private String description;
   private String urlImg;
@@ -12,13 +14,22 @@ public class PodcastData {
   private boolean hasMarkerIcon;
   private boolean isSaved = false;
 
-  public PodcastData(String name, String description, String urlImg, boolean hasInfoIcon, boolean hasMarkerIcon, String rssUrl) {
+  public PodcastData(int trackId, String name, String description, String urlImg, boolean hasInfoIcon, boolean hasMarkerIcon, String rssUrl) {
+    this.trackId = trackId;
     this.name = name;
     this.description = description;
     this.urlImg = urlImg;
     this.hasInfoIcon = hasInfoIcon;
     this.hasMarkerIcon = hasMarkerIcon;
     this.rssUrl = rssUrl;
+  }
+
+  public int getTrackId() {
+    return trackId;
+  }
+
+  public void setTrackId(int trackId) {
+    this.trackId = trackId;
   }
 
   public String getName() {

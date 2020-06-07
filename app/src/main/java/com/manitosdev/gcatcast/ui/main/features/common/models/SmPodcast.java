@@ -5,7 +5,7 @@ package com.manitosdev.gcatcast.ui.main.features.common.models;
  */
 public class SmPodcast extends PodcastData {
 
-  public SmPodcast(String name, String description, String urlImg, boolean hasInfoIcon, boolean hasMarkerIcon, String rssUrl) {
-    super(name, description, urlImg, hasInfoIcon, hasMarkerIcon, rssUrl);
+  public SmPodcast(int trackId, String name, String description, String urlImg, boolean hasInfoIcon, boolean hasMarkerIcon, String rssUrl) {
+    super(trackId, name, description, urlImg, hasInfoIcon, hasMarkerIcon, rssUrl);
   }
 }

@@ -99,9 +99,9 @@ public class DiscoveryFragment extends Fragment {
         }
 
         for (Map.Entry<String, List<Result>> groups : map.entrySet()) {
-          categories.add(new CategoryDivider(groups.getKey(), null, null, false, false, null));
+          categories.add(new CategoryDivider(0, groups.getKey(), null, null, false, false, null));
           for (Result item : groups.getValue()) {
-            categories.add(new SmPodcast(item.getArtistName(), null, item.getArtworkUrl100(), false, false, item.getFeedUrl()));
+            categories.add(new SmPodcast(item.getCollectionId(), item.getArtistName(), null, item.getArtworkUrl100(), false, false, item.getFeedUrl()));
           }
         }
 
