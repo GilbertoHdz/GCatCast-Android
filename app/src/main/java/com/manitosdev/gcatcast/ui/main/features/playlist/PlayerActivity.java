@@ -2,13 +2,19 @@ package com.manitosdev.gcatcast.ui.main.features.playlist;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
@@ -20,6 +26,7 @@ import com.google.android.exoplayer2.util.Util;
 import com.manitosdev.gcatcast.R;
 import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
 import com.manitosdev.gcatcast.ui.main.api.models.search.RssFeed;
+import com.manitosdev.gcatcast.ui.main.api.network.InternetCheck;
 import com.manitosdev.gcatcast.ui.main.features.main.MainViewModel;
 
 /**
@@ -28,6 +35,8 @@ import com.manitosdev.gcatcast.ui.main.features.main.MainViewModel;
  */
 public class PlayerActivity extends AppCompatActivity {
 
+  private static final String TAG = PlayerActivity.class.getSimpleName();
+
   public static final String ARG_RSS_FEED_URL = "playerActivity.feed.rss.url.value";
   private static final String KEY_MEDIA_URL = "playerActivity.media.url.value";
 
@@ -35,6 +44,12 @@ public class PlayerActivity extends AppCompatActivity {
 
   private PlayerView playerView;
   private SimpleExoPlayer exoPlayer;
+  private TextView _error_message;
+  private ProgressBar _loader;
+  private Button _retry;
+  private RecyclerView _playlistItemsRecycler;
+  private CardView _shortActionContainer;
+  private CardView _playerActionContainer;
 
   @Nullable
   private String localMediaUrl;
@@ -49,10 +64,16 @@ public class PlayerActivity extends AppCompatActivity {
       actionBar.hide();
     }
 
-    mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-    loadSavedPodCasts();
-
     playerView = (PlayerView) findViewById(R.id.playerViewWidgetContainer);
+    _error_message = (TextView) findViewById(R.id.player_view_error_message_text);
+    _loader = (ProgressBar) findViewById(R.id.playerViewLoader);
+    _retry = (Button) findViewById(R.id.playerViewRetryAction);
+    _playlistItemsRecycler = (RecyclerView) findViewById(R.id.payerViewPlayerlistItemsRecycler);
+    _shortActionContainer = (CardView) findViewById(R.id.playerViewShortActionContainer);
+    _playerActionContainer = (CardView) findViewById(R.id.payerViewPlayerlistActionContainer);
+
+    mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+    loadRssFeed();
 
     if (null != savedInstanceState && savedInstanceState.containsKey(KEY_MEDIA_URL)) {
       localMediaUrl = (String) savedInstanceState.getString(KEY_MEDIA_URL);
@@ -67,8 +88,7 @@ public class PlayerActivity extends AppCompatActivity {
       }
     }
 
-    assert rssFeedUrl != null;
-    mMainViewModel.loadRssFeedsByPodcast(rssFeedUrl);
+    checkNetworkConnection();
   }
 
   @Override
@@ -151,7 +171,54 @@ public class PlayerActivity extends AppCompatActivity {
     }
   }
 
-  private void loadSavedPodCasts() {
+  private void checkNetworkConnection() {
+    initialState();
+    new InternetCheck(new InternetCheck.Consumer() {
+      @Override
+      public void accept(Boolean internet) {
+        if (internet) {
+          assert rssFeedUrl != null;
+          mMainViewModel.loadRssFeedsByPodcast(rssFeedUrl);
+        } else {
+          showErrorMessage(R.string.error_network_message);
+        }
+      }
+    });
+  }
+
+  private void initialState() {
+    _loader.setVisibility(View.VISIBLE);
+    renderUiState(false);
+
+    _error_message.setVisibility(View.GONE);
+    _retry.setVisibility(View.GONE);
+    _retry.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        checkNetworkConnection();
+      }
+    });
+  }
+
+  private void showErrorMessage(int resMsgId) {
+    String message = this.getString(resMsgId);
+    _error_message.setText(message);
+    _error_message.setVisibility(View.VISIBLE);
+    _retry.setVisibility(View.VISIBLE);
+    _loader.setVisibility(View.GONE);
+    renderUiState(false);
+  }
+
+  private void renderUiState(boolean isVisible) {
+    Log.i(TAG, "initial ui state: " + isVisible);
+    int renderUi = isVisible ? View.VISIBLE : View.INVISIBLE;
+    _playlistItemsRecycler.setVisibility(renderUi);
+    _shortActionContainer.setVisibility(renderUi);
+    _playerActionContainer.setVisibility(renderUi);
+    playerView.setVisibility(renderUi);
+  }
+
+  private void loadRssFeed() {
     mMainViewModel.getRssFeedMutableLiveData() .observe(this, new Observer<ApiResult<RssFeed>>() {
       @Override
       public void onChanged(ApiResult<RssFeed> result) {
@@ -159,10 +226,12 @@ public class PlayerActivity extends AppCompatActivity {
         if (null != result.getError()) {
           result.getError().printStackTrace();
         } else if (null != result.getFailureMessage()) {
-          Log.i("PLAYLIST", result.getFailureMessage());
+          Log.i(TAG, result.getFailureMessage());
         } else {
           assert result.getResult() != null;
-
+          Log.i(TAG, "Success result!");
+          _loader.setVisibility(View.INVISIBLE);
+          renderUiState(true);
         }
       }
     });

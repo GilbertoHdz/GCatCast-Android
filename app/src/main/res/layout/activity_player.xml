@@ -12,7 +12,7 @@
         android:id="@+id/playerViewWidgetContainer"
         android:layout_width="0dp"
         android:layout_height="250dp"
-        app:layout_constraintBottom_toTopOf="@+id/playerShortActionContainer"
+        app:layout_constraintBottom_toTopOf="@+id/playerViewShortActionContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +20,7 @@
         app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/playerShortActionContainer"
+        android:id="@+id/playerViewShortActionContainer"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="6dp"
@@ -28,11 +28,11 @@
         android:layout_marginEnd="6dp"
         android:layout_marginBottom="6dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/payerViewPlayerlistItemsRecycler"
+        app:layout_constraintBottom_toTopOf="@id/payerViewPlayerlistItemsRecycler"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playerViewWidgetContainer">
+        app:layout_constraintTop_toBottomOf="@id/playerViewWidgetContainer">
 
         <LinearLayout
             android:id="@+id/playerShortGroupContainer"
@@ -70,16 +70,15 @@
     </androidx.cardview.widget.CardView>
 
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/payerViewPlayerlistItemsRecycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/payerViewPlayerlistActionContainer"
+        app:layout_constraintBottom_toTopOf="@id/payerViewPlayerlistActionContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playerShortActionContainer" />
+        app:layout_constraintTop_toBottomOf="@id/playerViewShortActionContainer" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/payerViewPlayerlistActionContainer"
@@ -93,7 +92,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/payerViewPlayerlistItemsRecycler">
+        app:layout_constraintTop_toBottomOf="@id/payerViewPlayerlistItemsRecycler">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/payerViewPlayerlistElementsGroup"
@@ -107,7 +106,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginEnd="12dp"
                 android:max="100"
-                app:layout_constraintBottom_toTopOf="@+id/payerViewPlayerlistActionPlay"
+                app:layout_constraintBottom_toTopOf="@id/payerViewPlayerlistActionPlay"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -120,10 +119,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/payerViewPlayerlistActionNext"
+                app:layout_constraintEnd_toStartOf="@id/payerViewPlayerlistActionNext"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/payerViewPlayerlistActionPrev"
-                app:layout_constraintTop_toBottomOf="@+id/payerViewPlayerlistActionSeek"
+                app:layout_constraintStart_toEndOf="@id/payerViewPlayerlistActionPrev"
+                app:layout_constraintTop_toBottomOf="@id/payerViewPlayerlistActionSeek"
                 app:srcCompat="@drawable/exo_controls_play" />
 
             <ImageView
@@ -131,11 +130,11 @@
                 style="@style/Widget.App.Button.OutlinedButton.IconOnly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@+id/payerViewPlayerlistActionPlay"
-                app:layout_constraintEnd_toStartOf="@+id/payerViewPlayerlistActionPlay"
+                app:layout_constraintBottom_toBottomOf="@id/payerViewPlayerlistActionPlay"
+                app:layout_constraintEnd_toStartOf="@id/payerViewPlayerlistActionPlay"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/payerViewPlayerlistActionPlay"
+                app:layout_constraintTop_toTopOf="@id/payerViewPlayerlistActionPlay"
                 app:srcCompat="@drawable/exo_controls_previous" />
 
             <ImageView
@@ -143,11 +142,11 @@
                 style="@style/Widget.App.Button.OutlinedButton.IconOnly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@+id/payerViewPlayerlistActionPlay"
+                app:layout_constraintBottom_toBottomOf="@id/payerViewPlayerlistActionPlay"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/payerViewPlayerlistActionPlay"
-                app:layout_constraintTop_toTopOf="@+id/payerViewPlayerlistActionPlay"
+                app:layout_constraintStart_toEndOf="@id/payerViewPlayerlistActionPlay"
+                app:layout_constraintTop_toTopOf="@id/payerViewPlayerlistActionPlay"
                 app:srcCompat="@drawable/exo_controls_next" />
 
             <TextView
@@ -158,8 +157,8 @@
                 android:text="00:00"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/colorError"
-                app:layout_constraintStart_toStartOf="@+id/payerViewPlayerlistActionSeek"
-                app:layout_constraintTop_toBottomOf="@+id/payerViewPlayerlistActionSeek" />
+                app:layout_constraintStart_toStartOf="@id/payerViewPlayerlistActionSeek"
+                app:layout_constraintTop_toBottomOf="@id/payerViewPlayerlistActionSeek" />
 
             <TextView
                 android:id="@+id/payerViewPlayerlistActionSeekEndValue"
@@ -169,9 +168,45 @@
                 android:text="00:00"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/colorError"
-                app:layout_constraintEnd_toEndOf="@+id/payerViewPlayerlistActionSeek"
-                app:layout_constraintTop_toBottomOf="@+id/payerViewPlayerlistActionSeek" />
+                app:layout_constraintEnd_toEndOf="@id/payerViewPlayerlistActionSeek"
+                app:layout_constraintTop_toBottomOf="@id/payerViewPlayerlistActionSeek" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <ProgressBar
+        android:id="@+id/playerViewLoader"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/player_view_error_message_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:textColor="@color/textColorPrimary"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="error message" />
+
+    <Button
+        android:id="@+id/playerViewRetryAction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Retry"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/player_view_error_message_text"
+        app:layout_constraintStart_toStartOf="@id/player_view_error_message_text"
+        app:layout_constraintTop_toBottomOf="@id/player_view_error_message_text" />
 </androidx.constraintlayout.widget.ConstraintLayout>
