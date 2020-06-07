@@ -1,6 +1,7 @@
 package com.manitosdev.gcatcast.ui.main.features.common.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.manitosdev.gcatcast.ui.main.features.common.models.CategoryDivider;
 import com.manitosdev.gcatcast.ui.main.features.common.models.LgPodcast;
 import com.manitosdev.gcatcast.ui.main.features.common.models.PodcastData;
 import com.manitosdev.gcatcast.ui.main.features.common.models.SmPodcast;
+import com.manitosdev.gcatcast.ui.main.features.playlist.PlayerActivity;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,8 @@ import java.util.List;
  * Created by gilbertohdz on 01/06/20.
  */
 public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+  private static String TAG = PodcastAdapter.class.getSimpleName();
 
   private Activity mContext;
   private AppDatabase mDb;
@@ -115,20 +119,21 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     notifyDataSetChanged();
   }
 
-  public int getItemIdPosition(int position) {
-    if (podcastData.get(position) instanceof CategoryDivider) {
-      return DIVIDER_ITEM;
-    }
-
-    return -1;
-  }
-
   public ItemActionClicked clickObserver() {
     return new ItemActionClicked() {
       @Override
       public void onItemClicked(PodcastData podcast) {
-        if (null != podcast.getRssUrl() && !podcast.getRssUrl().isEmpty()) {
-          Log.i("RSS_URL", podcast.getRssUrl());
+        String xmlUrl = podcast.getRssUrl();
+
+        if (null != xmlUrl && !xmlUrl.isEmpty()) {
+          if (xmlUrl.contains(".xml")) {
+            Intent intent = new Intent(mContext, PlayerActivity.class);
+            intent.putExtra(PlayerActivity.ARG_RSS_FEED_URL, podcast.getRssUrl());
+            mContext.startActivity(intent);
+          } else {
+            Log.w(TAG, "url not supported");
+            // TODO(PENDING) here we will create a new popup screen with webview podcast
+          }
         }
       }
 
