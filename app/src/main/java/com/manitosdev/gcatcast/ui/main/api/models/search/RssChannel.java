@@ -13,7 +13,8 @@ import org.simpleframework.xml.Text;
 @Root(name="channel", strict = false)
 public class RssChannel {
 
-  @Element(name = "title", required = false)
+  @Path("title")
+  @Text(required=false)
   private String mTitle;
 
   @Element(name = "lastBuildDate", required = false)
@@ -29,7 +30,8 @@ public class RssChannel {
   @Element(name = "copyright", required = false)
   private String copyright;
 
-  @Element(name = "description", required = false)
+  @Path("description")
+  @Text(required=false)
   private String description;
 
   @Element(name = "itunes:image", required = false)
@@ -38,11 +40,11 @@ public class RssChannel {
   @ElementList(name="item", inline = true)
   private ArrayList<RssItem> items;
 
-  public String getmTitle() {
+  public String getTitle() {
     return mTitle;
   }
 
-  public void setmTitle(String mTitle) {
+  public void setTitle(String mTitle) {
     this.mTitle = mTitle;
   }
 

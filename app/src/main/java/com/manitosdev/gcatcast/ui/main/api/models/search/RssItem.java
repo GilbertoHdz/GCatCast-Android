@@ -15,7 +15,8 @@ public class RssItem {
   @Text(required=false)
   private String title;
 
-  @Element(name="description", required = false)
+  @Path("description")
+  @Text(required=false)
   private String description;
 
   @Element(name="pubDate", required = false)
@@ -28,7 +29,7 @@ public class RssItem {
   private String summary;
 
   @Element(name="duration", required = false)
-  private Integer duration;
+  private String duration;
 
   @Element(name="season", required = false)
   private Integer season;
@@ -79,11 +80,11 @@ public class RssItem {
     this.summary = summary;
   }
 
-  public Integer getDuration() {
+  public String getDuration() {
     return duration;
   }
 
-  public void setDuration(Integer duration) {
+  public void setDuration(String duration) {
     this.duration = duration;
   }
 

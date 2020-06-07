@@ -20,7 +20,7 @@ import retrofit2.Response;
  */
 public class ItunesRepository {
 
-
+  private static final String TAG = ItunesRepository.class.getSimpleName();
   private static final Object LOCK = new Object();
   private static ItunesRepository sInstance;
 
@@ -87,6 +87,8 @@ public class ItunesRepository {
   }
 
   public void loadFeedFromRss(final String feedUrl) {
+    Log.i(TAG, "Feed URL: " + feedUrl);
+
     AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
       @Override
       public void run() {
@@ -99,12 +101,26 @@ public class ItunesRepository {
           _rssFeedMutableLiveData.postValue(result);
           e.printStackTrace();
         }
-        String baseUrl = url.getProtocol() + "://" + url.getHost() + "/";
 
+        String protocol = url.getProtocol();
+        String host = url.getHost();
+        int port = url.getPort();
+
+        String baseUrl;
+        // if the port is not explicitly specified in the input, it will be -1.
+        if (port == -1) {
+          baseUrl = String.format("%s://%s", protocol, host);
+        } else {
+          baseUrl = String.format("%s://%s:%d", protocol, host, port);
+        }
+
+        String lastPath = url.getPath().replace(baseUrl, "");
+
+        Log.i(TAG, "Feed BasePath: " + baseUrl);
+        Log.i(TAG, "Feed LastPath: " + lastPath);
 
         RssService service = httpClient.provideRssService(baseUrl);
-
-        Call<RssFeed> feedCall = service.getRssFeed(url.getPath().replace("/", ""));
+        Call<RssFeed> feedCall = service.getRssFeed(lastPath);
 
         feedCall.enqueue(new Callback<RssFeed>() {
           @Override
@@ -112,12 +128,12 @@ public class ItunesRepository {
             if (!response.isSuccessful()) {
               ApiResult<RssFeed> result = new ApiResult<>(null, "Error: " + response.code(), null);
               _rssFeedMutableLiveData.postValue(result);
-              Log.i("GIL_RSS", "Error" + response.code());
+              Log.i(TAG, "Error: " + response.code());
             } else {
               RssFeed rssBody = response.body();
               ApiResult<RssFeed> result = new ApiResult<>(rssBody, null, null);
               _rssFeedMutableLiveData.postValue(result);
-              Log.i("GIL_RSS", "Result size" + rssBody.getChannel().getmTitle());
+              Log.i(TAG, "Result success by title: " + rssBody.getChannel().getTitle());
             }
           }
 
@@ -125,7 +141,7 @@ public class ItunesRepository {
           public void onFailure(Call<RssFeed> call, Throwable t) {
             ApiResult<RssFeed> result = new ApiResult<>(null, null, t);
             _rssFeedMutableLiveData.postValue(result);
-            Log.i("GIL_RSS", "Error" + t.getMessage());
+            Log.i(TAG, "Error: " + t.getMessage());
           }
         });
       }
