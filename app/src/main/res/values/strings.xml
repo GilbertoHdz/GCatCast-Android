@@ -5,6 +5,8 @@
     <string name="main_tab_popular">Popular</string>
     <string name="main_tab_discovery">Discovery</string>
     <string name="main_tab_subscribed">Subscribed</string>
+    <string name="error_generic_message">An error has occurred, Please try again.</string>
+    <string name="error_network_message">No internet connection, Please connect network.</string>
 
     <!-- POPULAR -->
 

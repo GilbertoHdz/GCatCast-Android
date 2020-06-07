@@ -1,5 +1,8 @@
 package com.manitosdev.gcatcast.ui.main.features.popular;
 
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import com.manitosdev.gcatcast.R;
 import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
 import com.manitosdev.gcatcast.ui.main.api.models.search.Result;
 import com.manitosdev.gcatcast.ui.main.api.models.search.SearchResult;
+import com.manitosdev.gcatcast.ui.main.api.network.InternetCheck;
 import com.manitosdev.gcatcast.ui.main.api.repository.ItunesRepository;
 import com.manitosdev.gcatcast.ui.main.db.AppDatabase;
 import com.manitosdev.gcatcast.ui.main.features.common.adapter.PodcastAdapter;
@@ -28,6 +32,9 @@ public class PopularFragment extends Fragment {
 
   private MainViewModel mMainViewModel;
 
+  private TextView _error_message;
+  private ProgressBar _loader;
+  private Button _retry;
   private RecyclerView rvTopPodcast;
   private RecyclerView rvBodyPodcast;
 
@@ -56,12 +63,55 @@ public class PopularFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    _error_message = (TextView) view.findViewById(R.id.popular_section_error_message_text);
+    _loader = (ProgressBar) view.findViewById(R.id.popularSectionProgress);
+    _retry = (Button) view.findViewById(R.id.popularSectionRetry);
+
     mDb = AppDatabase.getInstance(requireActivity());
     smPodcastAdapter = new PodcastAdapter(requireActivity(), mDb);
     lgPodcastAdapter = new PodcastAdapter(requireActivity(), mDb);
     initializeRecyclers(view);
 
-    ItunesRepository.getInstance().loadPodcasts("popular");
+    checkNetworkConnection();
+  }
+
+  private void checkNetworkConnection() {
+    initialState();
+    new InternetCheck(new InternetCheck.Consumer() {
+      @Override
+      public void accept(Boolean internet) {
+        if (internet) {
+          ItunesRepository.getInstance().loadPodcasts("popular");
+        } else {
+          showErrorMessage(R.string.error_network_message);
+        }
+      }
+    });
+  }
+
+  private void initialState() {
+    _loader.setVisibility(View.VISIBLE);
+
+    _error_message.setVisibility(View.GONE);
+    _retry.setVisibility(View.GONE);
+    _retry.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        checkNetworkConnection();
+      }
+    });
+    rvTopPodcast.setVisibility(View.INVISIBLE);
+    rvBodyPodcast.setVisibility(View.INVISIBLE);
+  }
+
+  private void showErrorMessage(int resMsgId) {
+    String message = requireContext().getString(resMsgId);
+    _error_message.setText(message);
+    _error_message.setVisibility(View.VISIBLE);
+    _retry.setVisibility(View.VISIBLE);
+    _loader.setVisibility(View.GONE);
+    rvTopPodcast.setVisibility(View.INVISIBLE);
+    rvBodyPodcast.setVisibility(View.INVISIBLE);
   }
 
   private void initializeRecyclers(@NonNull View view) {
@@ -99,6 +149,10 @@ public class PopularFragment extends Fragment {
 
         smPodcastAdapter.updateData(smItems);
         lgPodcastAdapter.updateData(lgItems);
+
+        _loader.setVisibility(View.GONE);
+        rvTopPodcast.setVisibility(View.VISIBLE);
+        rvBodyPodcast.setVisibility(View.VISIBLE);
       }
     };
   }

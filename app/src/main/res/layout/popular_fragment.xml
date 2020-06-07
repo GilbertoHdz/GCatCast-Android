@@ -7,6 +7,42 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.features.popular.PopularFragment">
 
+    <ProgressBar
+        android:id="@+id/popularSectionProgress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/popular_section_error_message_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:textColor="@color/textColorPrimary"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="error message"/>
+
+    <Button
+        android:id="@+id/popularSectionRetry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Retry"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/popular_section_error_message_text"
+        app:layout_constraintStart_toStartOf="@id/popular_section_error_message_text"
+        app:layout_constraintTop_toBottomOf="@id/popular_section_error_message_text" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/popularTopSectionRecycler"
         android:layout_width="0dp"
