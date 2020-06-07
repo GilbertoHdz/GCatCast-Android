@@ -7,6 +7,9 @@ import androidx.lifecycle.LiveData;
 import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
 import com.manitosdev.gcatcast.ui.main.api.models.search.SearchResult;
 import com.manitosdev.gcatcast.ui.main.api.repository.ItunesRepository;
+import com.manitosdev.gcatcast.ui.main.db.AppDatabase;
+import com.manitosdev.gcatcast.ui.main.db.entities.PodCastEntity;
+import java.util.List;
 
 public class MainViewModel extends AndroidViewModel {
 
@@ -23,5 +26,10 @@ public class MainViewModel extends AndroidViewModel {
 
     public LiveData<ApiResult<SearchResult>> getSearchResultMutableLiveData() {
         return searchResultMutableLiveData;
+    }
+
+    public LiveData<List<PodCastEntity>> loadSavedPodCasts() {
+        AppDatabase db = AppDatabase.getInstance(this.getApplication());
+        return db.podCastDao().loadSavedPodCasts();
     }
 }

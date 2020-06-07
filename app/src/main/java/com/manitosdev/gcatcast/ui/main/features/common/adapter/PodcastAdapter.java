@@ -127,7 +127,9 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     return new ItemActionClicked() {
       @Override
       public void onItemClicked(PodcastData podcast) {
-        Log.i("RSS_URL", podcast.getRssUrl());
+        if (null != podcast.getRssUrl() && !podcast.getRssUrl().isEmpty()) {
+          Log.i("RSS_URL", podcast.getRssUrl());
+        }
       }
 
       @Override
