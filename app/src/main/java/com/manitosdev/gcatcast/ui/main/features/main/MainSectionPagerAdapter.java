@@ -28,7 +28,7 @@ public class MainSectionPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
+        switch (TAB_TITLES[position]) {
             case R.string.main_tab_discovery:
                 return DiscoveryFragment.newInstance();
             case R.string.main_tab_subscribed:

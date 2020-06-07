@@ -1,26 +1,27 @@
 package com.manitosdev.gcatcast.ui.main.features.main;
 
-import androidx.arch.core.util.Function;
+import android.app.Application;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
-import androidx.lifecycle.ViewModel;
+import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
+import com.manitosdev.gcatcast.ui.main.api.models.search.SearchResult;
+import com.manitosdev.gcatcast.ui.main.api.repository.ItunesRepository;
 
-public class MainViewModel extends ViewModel {
+public class MainViewModel extends AndroidViewModel {
 
-    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
-    private LiveData<String> mText = Transformations.map(mIndex, new Function<Integer, String>() {
-        @Override
-        public String apply(Integer input) {
-            return "Hello world from section: " + input;
-        }
-    });
+    @NonNull
+    private ItunesRepository repository = ItunesRepository.getInstance();
 
-    public void setIndex(int index) {
-        mIndex.setValue(index);
+    public MainViewModel(@NonNull Application application) {
+        super(application);
+        searchResultMutableLiveData = repository.getSearchResultMutableLiveData();
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    @NonNull
+    private LiveData<ApiResult<SearchResult>> searchResultMutableLiveData;
+
+    public LiveData<ApiResult<SearchResult>> getSearchResultMutableLiveData() {
+        return searchResultMutableLiveData;
     }
 }

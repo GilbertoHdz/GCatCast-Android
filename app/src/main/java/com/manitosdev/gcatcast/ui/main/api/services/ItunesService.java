@@ -6,7 +6,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 /**
- * term=jack+johnson&limit=25&country=ca&entity=podcast.
+ * term=jack+johnson&limit=25&country=MX&entity=podcast.
  *
  * Created by gilbertohdz on 26/05/20.
  */
@@ -20,7 +20,7 @@ public interface ItunesService {
    * @param limit default 50
    * @return
    */
-  @GET("search")
+  @GET("search?sort=recent")
   Call<SearchResult> getItunesSearch(
       @Query("term") String term,
       @Query("entity") String entity,
