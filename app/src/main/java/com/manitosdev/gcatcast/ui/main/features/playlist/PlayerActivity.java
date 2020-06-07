@@ -223,6 +223,7 @@ public class PlayerActivity extends AppCompatActivity {
       @Override
       public void onChanged(ApiResult<RssFeed> result) {
 
+        if (null == result) return;
         if (null != result.getError()) {
           result.getError().printStackTrace();
         } else if (null != result.getFailureMessage()) {

@@ -9,6 +9,7 @@ import com.manitosdev.gcatcast.ui.main.api.network.AppExecutors;
 import com.manitosdev.gcatcast.ui.main.api.network.CCatHttpClient;
 import com.manitosdev.gcatcast.ui.main.api.services.ItunesService;
 import com.manitosdev.gcatcast.ui.main.api.services.RssService;
+import com.manitosdev.gcatcast.ui.main.features.common.helpers.SingleLiveEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import retrofit2.Call;
@@ -36,13 +37,13 @@ public class ItunesRepository {
     return sInstance;
   }
 
-  private MutableLiveData<ApiResult<SearchResult>> searchResultMutableLiveData = new MutableLiveData<>();
-  public MutableLiveData<ApiResult<SearchResult>> getSearchResultMutableLiveData() {
+  private SingleLiveEvent<ApiResult<SearchResult>> searchResultMutableLiveData = new SingleLiveEvent<>();
+  public SingleLiveEvent<ApiResult<SearchResult>> getSearchResultMutableLiveData() {
     return searchResultMutableLiveData;
   }
 
-  private MutableLiveData<ApiResult<RssFeed>> _rssFeedMutableLiveData = new MutableLiveData<>();
-  public MutableLiveData<ApiResult<RssFeed>> getRssFeedMutableLiveData() {
+  private SingleLiveEvent<ApiResult<RssFeed>> _rssFeedMutableLiveData = new SingleLiveEvent<>();
+  public SingleLiveEvent<ApiResult<RssFeed>> getRssFeedMutableLiveData() {
     return _rssFeedMutableLiveData;
   }
 
@@ -65,13 +66,13 @@ public class ItunesRepository {
               ApiResult<SearchResult> result = new ApiResult<>(null, "Error: " + response.code(), null);
               searchResultMutableLiveData.postValue(result);
 
-              Log.i("GIL_", "Error" + response.code());
+              Log.i(TAG, "Error" + response.code());
             } else {
               SearchResult searchResult = response.body();
 
               ApiResult<SearchResult> result = new ApiResult<>(searchResult, null, null);
               searchResultMutableLiveData.postValue(result);
-              Log.i("GIL_", "Result size" + searchResult.getResultCount());
+              Log.i(TAG, "Result size" + searchResult.getResultCount());
             }
           }
 
@@ -79,7 +80,7 @@ public class ItunesRepository {
           public void onFailure(Call<SearchResult> call, Throwable t) {
             ApiResult<SearchResult> result = new ApiResult<>(null, null, t);
             searchResultMutableLiveData.postValue(result);
-            Log.i("GIL_", "Error" + t.getMessage());
+            Log.i(TAG, "Error" + t.getMessage());
           }
         });
       }
