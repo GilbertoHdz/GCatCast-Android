@@ -5,11 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import com.manitosdev.gcatcast.R;
+import com.manitosdev.gcatcast.ui.main.features.common.models.CategoryDivider;
 import com.manitosdev.gcatcast.ui.main.features.common.models.LgPodcast;
 import com.manitosdev.gcatcast.ui.main.features.common.models.PodcastData;
 import com.manitosdev.gcatcast.ui.main.features.common.models.SmPodcast;
@@ -27,8 +29,9 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     this.mContext = mContext;
   }
 
-  private final int SMALL_ITEM = 0;
-  private final int LARGE_ITEM = 1;
+  public  static final int SMALL_ITEM = 0;
+  public  static final int LARGE_ITEM = 1;
+  public  static final int DIVIDER_ITEM = 2;
 
   private ArrayList<PodcastData> podcastData = new ArrayList<>();
 
@@ -50,6 +53,10 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         _v = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.common_item_podcast_large_detail, parent, false);
         vh=  new LargePodcastViewHolder(_v);
         break;
+      case DIVIDER_ITEM:
+        _v = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.common_item_podcast_separator, parent, false);
+        vh=  new CategoryDividerViewHolder(_v);
+        break;
       default:
         throw new IllegalStateException("viewType id not found: " + viewType);
     }
@@ -69,6 +76,10 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
           (LgPodcast) podcastData.get(position),
           clickObserver()
       );
+    } else if (holder instanceof CategoryDividerViewHolder) {
+      ((CategoryDividerViewHolder) holder).bind(
+          (CategoryDivider) podcastData.get(position)
+      );
     } else {
       throw new IllegalStateException("bind holder exception by: " + holder.getClass().getSimpleName());
     }
@@ -77,9 +88,11 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   @Override
   public int getItemViewType(int position) {
     if (podcastData.get(position) instanceof SmPodcast) {
-      return 0;
+      return SMALL_ITEM;
     } else if (podcastData.get(position) instanceof LgPodcast) {
-      return 1;
+      return LARGE_ITEM;
+    } else if (podcastData.get(position) instanceof CategoryDivider) {
+      return DIVIDER_ITEM;
     } else {
       throw new IllegalStateException("item view type position not found: " + position);
     }
@@ -95,6 +108,14 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     podcastData.addAll(items);
 
     notifyDataSetChanged();
+  }
+
+  public int getItemIdPosition(int position) {
+    if (podcastData.get(position) instanceof CategoryDivider) {
+      return DIVIDER_ITEM;
+    }
+
+    return -1;
   }
 
   public ItemActionClicked clickObserver() {
