@@ -14,6 +14,7 @@ import android.os.Bundle;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -25,8 +26,12 @@ import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.Util;
 import com.manitosdev.gcatcast.R;
 import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
+import com.manitosdev.gcatcast.ui.main.api.models.search.RssChannel;
 import com.manitosdev.gcatcast.ui.main.api.models.search.RssFeed;
+import com.manitosdev.gcatcast.ui.main.api.models.search.RssItem;
 import com.manitosdev.gcatcast.ui.main.api.network.InternetCheck;
+import com.manitosdev.gcatcast.ui.main.db.AppDatabase;
+import com.manitosdev.gcatcast.ui.main.features.common.adapter.PodcastAdapter;
 import com.manitosdev.gcatcast.ui.main.features.main.MainViewModel;
 
 /**
@@ -41,6 +46,9 @@ public class PlayerActivity extends AppCompatActivity {
   private static final String KEY_MEDIA_URL = "playerActivity.media.url.value";
 
   private MainViewModel mMainViewModel;
+  private PlaylistAdapter mPlaylistAdapter;
+
+  private AppDatabase mDb;
 
   private PlayerView playerView;
   private SimpleExoPlayer exoPlayer;
@@ -64,13 +72,22 @@ public class PlayerActivity extends AppCompatActivity {
       actionBar.hide();
     }
 
+    // Initial instances
+    mDb = AppDatabase.getInstance(PlayerActivity.this);
+    mPlaylistAdapter = new PlaylistAdapter(actionCallback());
+
     playerView = (PlayerView) findViewById(R.id.playerViewWidgetContainer);
     _error_message = (TextView) findViewById(R.id.player_view_error_message_text);
     _loader = (ProgressBar) findViewById(R.id.playerViewLoader);
     _retry = (Button) findViewById(R.id.playerViewRetryAction);
-    _playlistItemsRecycler = (RecyclerView) findViewById(R.id.payerViewPlayerlistItemsRecycler);
     _shortActionContainer = (CardView) findViewById(R.id.playerViewShortActionContainer);
     _playerActionContainer = (CardView) findViewById(R.id.payerViewPlayerlistActionContainer);
+
+    _playlistItemsRecycler = (RecyclerView) findViewById(R.id.payerViewPlayerlistItemsRecycler);
+    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+    _playlistItemsRecycler.setHasFixedSize(true);
+    _playlistItemsRecycler.setLayoutManager(mLayoutManager);
+    _playlistItemsRecycler.setAdapter(mPlaylistAdapter);
 
     mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
     loadRssFeed();
@@ -218,6 +235,10 @@ public class PlayerActivity extends AppCompatActivity {
     playerView.setVisibility(renderUi);
   }
 
+  private void renderUiByChannel(RssChannel channel) {
+    mPlaylistAdapter.updateData(channel.getItems());
+  }
+
   private void loadRssFeed() {
     mMainViewModel.getRssFeedMutableLiveData() .observe(this, new Observer<ApiResult<RssFeed>>() {
       @Override
@@ -233,8 +254,28 @@ public class PlayerActivity extends AppCompatActivity {
           Log.i(TAG, "Success result!");
           _loader.setVisibility(View.INVISIBLE);
           renderUiState(true);
+          renderUiByChannel(result.getResult().getChannel());
         }
       }
     });
+  }
+
+  public PlaylistAdapter.ItemActionClicked actionCallback() {
+    return new PlaylistAdapter.ItemActionClicked() {
+      @Override
+      public void onItemClicked(RssItem rssItem) {
+        Log.i(TAG, "Item clicked");
+      }
+
+      @Override
+      public void markerClicked(RssItem rssItem) {
+
+      }
+
+      @Override
+      public void infoClicked(RssItem rssItem) {
+        // TODO(PENDING) here we will create a new popup screen with podcast or track description
+      }
+    };
   }
 }

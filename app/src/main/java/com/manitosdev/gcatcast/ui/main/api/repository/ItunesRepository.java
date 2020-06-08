@@ -1,7 +1,6 @@
 package com.manitosdev.gcatcast.ui.main.api.repository;
 
 import android.util.Log;
-import androidx.lifecycle.MutableLiveData;
 import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
 import com.manitosdev.gcatcast.ui.main.api.models.search.RssFeed;
 import com.manitosdev.gcatcast.ui.main.api.models.search.SearchResult;
