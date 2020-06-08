@@ -19,5 +19,7 @@
     <color name="colorError">#B00020</color>
     <color name="colorOnError">#FFFFFF</color>
 
+    <color name="colorErrorInverse">#6DB00020</color>
+
     <color name="black_overlay">#66000000</color>
 </resources>

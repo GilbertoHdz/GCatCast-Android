@@ -36,7 +36,7 @@ public class PlaylistViewHolder extends RecyclerView.ViewHolder {
     viewContainer = (ConstraintLayout) itemView.findViewById(R.id.playlist_item_rss_feed_container);
   }
 
-  void bind(final RssItem item, final PlaylistAdapter.ItemActionClicked action) {
+  void bind(final RssItem item, final PlaylistAdapter.ItemActionClicked action, int position) {
     name.setText(item.getTitle());
     desc.setText(item.getDescription());
     loadThumbnail(item.getEnclosure().getThumbnail());
@@ -44,7 +44,7 @@ public class PlaylistViewHolder extends RecyclerView.ViewHolder {
     viewContainer.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        action.onItemClicked(item);
+        action.onItemClicked(item, position);
       }
     });
 

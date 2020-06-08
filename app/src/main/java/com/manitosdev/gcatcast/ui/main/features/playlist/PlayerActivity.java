@@ -15,6 +15,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -62,6 +63,7 @@ public class PlayerActivity extends AppCompatActivity {
   private PlayerView playerView;
   private SimpleExoPlayer exoPlayer;
   private boolean isPlaying = false;
+  private int currentPlaylistIndex;
 
   private TextView _error_message;
   private ProgressBar _loader;
@@ -220,6 +222,7 @@ public class PlayerActivity extends AppCompatActivity {
   private void initMediaControls() {
     initPlayButton();
     initSeekBar();
+    initNextPrevButton();
   }
 
   private void initPlayButton() {
@@ -230,6 +233,54 @@ public class PlayerActivity extends AppCompatActivity {
         setPlayPause(!isPlaying);
       }
     });
+  }
+
+  private void initNextPrevButton() {
+    _next.setOnClickListener(_view -> {
+      changeItemToPlay(true, true);
+    });
+
+    _prev.setOnClickListener(_view -> {
+      changeItemToPlay(false, true);
+    });
+  }
+
+  private void changeItemToPlay(boolean isNext, boolean isMediaControlActions) {
+    if (mPlaylistAdapter.getItemCount() == 0) return;
+
+    if (currentPlaylistIndex + 1 > (mPlaylistAdapter.getItemCount() - 1) && isNext && isMediaControlActions) {
+      return;
+    }
+
+    if (currentPlaylistIndex -1 < 0 && !isNext) {
+      return;
+    }
+
+    if (isMediaControlActions) {
+      currentPlaylistIndex += isNext ? 1 : -1;
+    }
+
+    _prev.setColorFilter(ContextCompat.getColor(this, R.color.colorError));
+    _next.setColorFilter(ContextCompat.getColor(this, R.color.colorError));
+
+    if (currentPlaylistIndex == (mPlaylistAdapter.getItemCount() - 1)) {
+      _prev.setColorFilter(ContextCompat.getColor(this, R.color.colorError));
+      _prev.setClickable(true);
+      _next.setColorFilter(ContextCompat.getColor(this, R.color.colorErrorInverse));
+      _next.setClickable(false);
+    }
+
+    if (currentPlaylistIndex == 0) {
+      _prev.setColorFilter(ContextCompat.getColor(this, R.color.colorErrorInverse));
+      _prev.setClickable(false);
+      _next.setColorFilter(ContextCompat.getColor(this, R.color.colorError));
+      _next.setClickable(true);
+    }
+
+    if (isMediaControlActions) {
+      String nextToPlayUrl = mPlaylistAdapter.getPlaylist().get(currentPlaylistIndex).getEnclosure().getUrl();
+      callPlaylistItem(nextToPlayUrl);
+    }
   }
 
   /**
@@ -375,6 +426,11 @@ public class PlayerActivity extends AppCompatActivity {
     // Initialize player and controls by the first element and with pause player
     if (!items.isEmpty()) {
       localMediaUrl = items.get(0).getEnclosure().getUrl();
+
+      currentPlaylistIndex = 0;
+      _prev.setColorFilter(ContextCompat.getColor(this, R.color.colorErrorInverse));
+      _prev.setClickable(false);
+
       initializePlayer();
     }
 
@@ -415,8 +471,10 @@ public class PlayerActivity extends AppCompatActivity {
   public PlaylistAdapter.ItemActionClicked actionCallback() {
     return new PlaylistAdapter.ItemActionClicked() {
       @Override
-      public void onItemClicked(RssItem rssItem) {
+      public void onItemClicked(RssItem rssItem, int position) {
+        currentPlaylistIndex = position;
         callPlaylistItem(rssItem.getEnclosure().getUrl());
+        changeItemToPlay(true, false);
       }
 
       @Override

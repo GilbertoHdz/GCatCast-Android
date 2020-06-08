@@ -27,7 +27,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
   private ArrayList<RssItem> items = new ArrayList<>();
 
   public interface ItemActionClicked {
-    void onItemClicked(RssItem rssItem);
+    void onItemClicked(RssItem rssItem, int position);
     void markerClicked(RssItem rssItem);
     void infoClicked(RssItem rssItem);
   }
@@ -44,7 +44,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
 
   @Override
   public void onBindViewHolder(@NonNull PlaylistViewHolder holder, int position) {
-    holder.bind(items.get(position), _callback);
+    holder.bind(items.get(position), _callback, position);
   }
 
   @Override
@@ -56,5 +56,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
     items.clear();
     items.addAll(rssItems);
     notifyDataSetChanged();
+  }
+
+  public ArrayList<RssItem> getPlaylist() {
+    return items;
   }
 }
