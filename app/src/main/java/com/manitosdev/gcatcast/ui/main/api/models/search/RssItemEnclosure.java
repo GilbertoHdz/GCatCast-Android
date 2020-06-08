@@ -18,6 +18,8 @@ public class RssItemEnclosure {
   @Attribute(name = "type", required = false)
   private String type;
 
+  private String thumbnail;
+
   public String getUrl() {
     return url;
   }
@@ -40,5 +42,13 @@ public class RssItemEnclosure {
 
   public void setType(String type) {
     this.type = type;
+  }
+
+  public String getThumbnail() {
+    return thumbnail;
+  }
+
+  public void setThumbnail(String thumbnail) {
+    this.thumbnail = thumbnail;
   }
 }

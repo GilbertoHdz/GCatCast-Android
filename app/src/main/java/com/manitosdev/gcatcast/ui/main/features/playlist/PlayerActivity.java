@@ -50,6 +50,7 @@ public class PlayerActivity extends AppCompatActivity {
   private static final String TAG = PlayerActivity.class.getSimpleName();
 
   public static final String ARG_RSS_FEED_URL = "playerActivity.feed.rss.url.value";
+  public static final String ARG_RSS_FEED_THUMBNAIL_URL = "playerActivity.feed.rss.thumbnail.url.value";
   private static final String KEY_MEDIA_URL = "playerActivity.media.url.value";
 
   private MainViewModel mMainViewModel;
@@ -76,6 +77,7 @@ public class PlayerActivity extends AppCompatActivity {
   @Nullable
   private String localMediaUrl;
   private String rssFeedUrl;
+  private String rssFeedThumbnailUrl;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -119,8 +121,9 @@ public class PlayerActivity extends AppCompatActivity {
 
     if (savedInstanceState == null) {
       Intent extras = getIntent();
-      if (extras.hasExtra(ARG_RSS_FEED_URL)) {
+      if (extras.hasExtra(ARG_RSS_FEED_URL) && extras.hasExtra(ARG_RSS_FEED_THUMBNAIL_URL)) {
         rssFeedUrl = (String) extras.getStringExtra(ARG_RSS_FEED_URL);
+        rssFeedThumbnailUrl = (String) extras.getStringExtra(ARG_RSS_FEED_THUMBNAIL_URL);
       } else {
         throw new IllegalArgumentException("the params shouldn't be null");
       }
@@ -364,6 +367,7 @@ public class PlayerActivity extends AppCompatActivity {
     ArrayList<RssItem> items = new ArrayList<>();
     for (RssItem media : channel.getItems()) {
       if (null != media.getEnclosure() && isAudioOrVideoType(media.getEnclosure().getType())) {
+        media.getEnclosure().setThumbnail(rssFeedThumbnailUrl);
         items.add(media);
       }
     }

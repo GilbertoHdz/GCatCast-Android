@@ -129,6 +129,7 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
           if (xmlUrl.contains(".xml")) {
             Intent intent = new Intent(mContext, PlayerActivity.class);
             intent.putExtra(PlayerActivity.ARG_RSS_FEED_URL, podcast.getRssUrl());
+            intent.putExtra(PlayerActivity.ARG_RSS_FEED_THUMBNAIL_URL, podcast.getUrlImg());
             mContext.startActivity(intent);
           } else {
             Log.w(TAG, "url not supported");

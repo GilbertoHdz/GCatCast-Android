@@ -1,6 +1,7 @@
 package com.manitosdev.gcatcast.ui.main.api.repository;
 
 import android.util.Log;
+import androidx.lifecycle.MutableLiveData;
 import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
 import com.manitosdev.gcatcast.ui.main.api.models.search.RssFeed;
 import com.manitosdev.gcatcast.ui.main.api.models.search.SearchResult;
@@ -36,8 +37,8 @@ public class ItunesRepository {
     return sInstance;
   }
 
-  private SingleLiveEvent<ApiResult<SearchResult>> searchResultMutableLiveData = new SingleLiveEvent<>();
-  public SingleLiveEvent<ApiResult<SearchResult>> getSearchResultMutableLiveData() {
+  private MutableLiveData<ApiResult<SearchResult>> searchResultMutableLiveData = new MutableLiveData<>();
+  public MutableLiveData<ApiResult<SearchResult>> getSearchResultMutableLiveData() {
     return searchResultMutableLiveData;
   }
 
