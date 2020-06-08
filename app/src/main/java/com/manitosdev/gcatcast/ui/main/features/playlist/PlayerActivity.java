@@ -2,9 +2,12 @@ package com.manitosdev.gcatcast.ui.main.features.playlist;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +19,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
@@ -23,6 +27,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Log;
+import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
 import com.manitosdev.gcatcast.R;
 import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
@@ -31,8 +36,10 @@ import com.manitosdev.gcatcast.ui.main.api.models.search.RssFeed;
 import com.manitosdev.gcatcast.ui.main.api.models.search.RssItem;
 import com.manitosdev.gcatcast.ui.main.api.network.InternetCheck;
 import com.manitosdev.gcatcast.ui.main.db.AppDatabase;
-import com.manitosdev.gcatcast.ui.main.features.common.adapter.PodcastAdapter;
 import com.manitosdev.gcatcast.ui.main.features.main.MainViewModel;
+import java.util.ArrayList;
+import java.util.Formatter;
+import java.util.Locale;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -49,15 +56,22 @@ public class PlayerActivity extends AppCompatActivity {
   private PlaylistAdapter mPlaylistAdapter;
 
   private AppDatabase mDb;
+  private Handler handler;
 
   private PlayerView playerView;
   private SimpleExoPlayer exoPlayer;
+  private boolean isPlaying = false;
+
   private TextView _error_message;
   private ProgressBar _loader;
   private Button _retry;
   private RecyclerView _playlistItemsRecycler;
   private CardView _shortActionContainer;
   private CardView _playerActionContainer;
+
+  private TextView _currentTime, _endTime;
+  private ImageView _prev, _next, _playPause;
+  private SeekBar _seekProgress;
 
   @Nullable
   private String localMediaUrl;
@@ -82,6 +96,13 @@ public class PlayerActivity extends AppCompatActivity {
     _retry = (Button) findViewById(R.id.playerViewRetryAction);
     _shortActionContainer = (CardView) findViewById(R.id.playerViewShortActionContainer);
     _playerActionContainer = (CardView) findViewById(R.id.payerViewPlayerlistActionContainer);
+
+    _currentTime = (TextView) findViewById(R.id.payerViewPlayerlistActionSeekStartValue);
+    _endTime = (TextView) findViewById(R.id.payerViewPlayerlistActionSeekEndValue);
+    _seekProgress = (SeekBar) findViewById(R.id.payerViewPlayerlistActionSeek);
+    _prev = (ImageView) findViewById(R.id.payerViewPlayerlistActionPrev);
+    _next = (ImageView) findViewById(R.id.payerViewPlayerlistActionNext);
+    _playPause = (ImageView) findViewById(R.id.payerViewPlayerlistActionPlay);
 
     _playlistItemsRecycler = (RecyclerView) findViewById(R.id.payerViewPlayerlistItemsRecycler);
     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
@@ -118,7 +139,7 @@ public class PlayerActivity extends AppCompatActivity {
   public void onStart() {
     super.onStart();
     if (Util.SDK_INT > 23) {
-      initializePlayer(localMediaUrl);
+      initializePlayer();
     }
   }
 
@@ -126,7 +147,7 @@ public class PlayerActivity extends AppCompatActivity {
   public void onResume() {
     super.onResume();
     if ((Util.SDK_INT <= 23 || exoPlayer == null)) {
-      initializePlayer(localMediaUrl);
+      initializePlayer();
     }
   }
 
@@ -152,17 +173,21 @@ public class PlayerActivity extends AppCompatActivity {
     super.onDestroy();
   }
 
-  private void initializePlayer(String mediaUrl) {
-    if (null == mediaUrl) return;
+  private void initializePlayer() {
+    if (null == localMediaUrl) return;
     exoPlayer = new SimpleExoPlayer.Builder(PlayerActivity.this).build();
+    exoPlayer.addListener(eventListener);
     playerView.setPlayer(exoPlayer);
     exoPlayer.seekTo(0);
 
-    MediaSource mediaSource = buildMediaSource(Uri.parse(mediaUrl));
+    MediaSource mediaSource = buildMediaSource(Uri.parse(localMediaUrl));
 
     // Prepare the player with the source.
     exoPlayer.prepare(mediaSource);
-    exoPlayer.setPlayWhenReady(true);
+    exoPlayer.setPlayWhenReady(false); // change to play, when clicked item element or play button
+
+    // Ui control states
+    initMediaControls();
   }
 
   private MediaSource buildMediaSource(Uri uri) {
@@ -185,7 +210,107 @@ public class PlayerActivity extends AppCompatActivity {
     if (exoPlayer != null) {
       exoPlayer.release();
       exoPlayer = null;
+      setPlayPause(false);
     }
+  }
+
+  private void initMediaControls() {
+    initPlayButton();
+    initSeekBar();
+  }
+
+  private void initPlayButton() {
+    _playPause.requestFocus();
+    _playPause.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        setPlayPause(!isPlaying);
+      }
+    });
+  }
+
+  /**
+   * Starts or stops playback. Also takes care of the Play/Pause button toggling
+   * @param play True if playback should be started
+   */
+  private void setPlayPause(boolean play){
+    isPlaying = play;
+    if (null != exoPlayer) exoPlayer.setPlayWhenReady(play);
+    if (!isPlaying) {
+      _playPause.setImageResource(R.drawable.exo_controls_play);
+    } else {
+      _playPause.setImageResource(R.drawable.exo_controls_pause);
+    }
+    if (null != exoPlayer) setProgress();
+  }
+
+  private String stringForTime(int timeMs) {
+    StringBuilder mFormatBuilder;
+    Formatter mFormatter;
+    mFormatBuilder = new StringBuilder();
+    mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
+    int totalSeconds =  timeMs / 1000;
+
+    int seconds = totalSeconds % 60;
+    int minutes = (totalSeconds / 60) % 60;
+    int hours   = totalSeconds / 3600;
+
+    mFormatBuilder.setLength(0);
+    if (hours > 0) {
+      return mFormatter.format("%d:%02d:%02d", hours, minutes, seconds).toString();
+    } else {
+      return mFormatter.format("%02d:%02d", minutes, seconds).toString();
+    }
+  }
+
+  private void setProgress() {
+    _seekProgress.setMax((int) exoPlayer.getDuration() / 1000);
+    _currentTime.setText(stringForTime((int) exoPlayer.getCurrentPosition()));
+    _endTime.setText(stringForTime((int) exoPlayer.getDuration()));
+
+    if (handler == null) handler = new Handler();
+
+    // Make sure you update Seekbar on UI thread
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        if (exoPlayer != null && isPlaying) {
+          _seekProgress.setMax((int) exoPlayer.getDuration() / 1000);
+          int mCurrentPosition = (int) exoPlayer.getCurrentPosition() / 1000;
+          _seekProgress.setProgress(mCurrentPosition);
+          _currentTime.setText(stringForTime((int)exoPlayer.getCurrentPosition()));
+          _endTime.setText(stringForTime((int)exoPlayer.getDuration()));
+
+          handler.postDelayed(this, 1000);
+        }
+      }
+    });
+  }
+
+  private void initSeekBar() {
+    _seekProgress.requestFocus();
+
+    _seekProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+      @Override
+      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (!fromUser) {
+          // We're not interested in programmatically generated changes to
+          // the progress bar's position.
+          return;
+        }
+
+        exoPlayer.seekTo(progress * 1000);
+      }
+
+      @Override
+      public void onStartTrackingTouch(SeekBar seekBar) { }
+
+      @Override
+      public void onStopTrackingTouch(SeekBar seekBar) { }
+    });
+
+    _seekProgress.setMax(0);
+    _seekProgress.setMax((int) exoPlayer.getDuration() / 1000);
   }
 
   private void checkNetworkConnection() {
@@ -236,7 +361,31 @@ public class PlayerActivity extends AppCompatActivity {
   }
 
   private void renderUiByChannel(RssChannel channel) {
-    mPlaylistAdapter.updateData(channel.getItems());
+    ArrayList<RssItem> items = new ArrayList<>();
+    for (RssItem media : channel.getItems()) {
+      if (null != media.getEnclosure() && isAudioOrVideoType(media.getEnclosure().getType())) {
+        items.add(media);
+      }
+    }
+
+    // Initialize player and controls by the first element and with pause player
+    if (!items.isEmpty()) {
+      localMediaUrl = items.get(0).getEnclosure().getUrl();
+      initializePlayer();
+    }
+
+    mPlaylistAdapter.updateData(items);
+  }
+
+  public static boolean isAudioOrVideoType(String mimeType) {
+    return mimeType.contains(MimeTypes.BASE_TYPE_VIDEO) || mimeType.contains(MimeTypes.BASE_TYPE_AUDIO);
+  }
+
+  private void callPlaylistItem(String url) {
+    localMediaUrl = url;
+    releasePlayer();
+    initializePlayer(); // call again for new element
+    setPlayPause(true);
   }
 
   private void loadRssFeed() {
@@ -251,7 +400,6 @@ public class PlayerActivity extends AppCompatActivity {
           Log.i(TAG, result.getFailureMessage());
         } else {
           assert result.getResult() != null;
-          Log.i(TAG, "Success result!");
           _loader.setVisibility(View.INVISIBLE);
           renderUiState(true);
           renderUiByChannel(result.getResult().getChannel());
@@ -264,7 +412,7 @@ public class PlayerActivity extends AppCompatActivity {
     return new PlaylistAdapter.ItemActionClicked() {
       @Override
       public void onItemClicked(RssItem rssItem) {
-        Log.i(TAG, "Item clicked");
+        callPlaylistItem(rssItem.getEnclosure().getUrl());
       }
 
       @Override
@@ -278,4 +426,29 @@ public class PlayerActivity extends AppCompatActivity {
       }
     };
   }
+
+  private ExoPlayer.EventListener eventListener = new ExoPlayer.EventListener() {
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+      Log.i(TAG,"onPlayerStateChanged: playWhenReady: " + playWhenReady + " playbackState: " + playbackState);
+      switch (playbackState){
+        case ExoPlayer.STATE_ENDED:
+          Log.i(TAG,"Playback ended!");
+          //Stop playback and return to start position
+          setPlayPause(false);
+          exoPlayer.seekTo(0);
+          break;
+        case ExoPlayer.STATE_READY:
+          Log.i(TAG,"ExoPlayer ready! pos: " + exoPlayer.getCurrentPosition() + " max: " + stringForTime((int) exoPlayer.getDuration()));
+          setProgress();
+          break;
+        case ExoPlayer.STATE_BUFFERING:
+          Log.i(TAG,"Playback buffering!");
+          break;
+        case ExoPlayer.STATE_IDLE:
+          Log.i(TAG,"ExoPlayer idle!");
+          break;
+      }
+    }
+  };
 }
