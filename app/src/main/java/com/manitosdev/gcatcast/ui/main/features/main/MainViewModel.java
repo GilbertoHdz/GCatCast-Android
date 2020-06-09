@@ -9,6 +9,7 @@ import com.manitosdev.gcatcast.ui.main.api.models.search.RssFeed;
 import com.manitosdev.gcatcast.ui.main.api.models.search.SearchResult;
 import com.manitosdev.gcatcast.ui.main.api.repository.ItunesRepository;
 import com.manitosdev.gcatcast.ui.main.db.AppDatabase;
+import com.manitosdev.gcatcast.ui.main.db.entities.PlaylistEntity;
 import com.manitosdev.gcatcast.ui.main.db.entities.PodCastEntity;
 import java.util.List;
 
@@ -31,6 +32,11 @@ public class MainViewModel extends AndroidViewModel {
     public LiveData<List<PodCastEntity>> loadSavedPodCasts() {
         AppDatabase db = AppDatabase.getInstance(this.getApplication());
         return db.podCastDao().loadSavedPodCasts();
+    }
+
+    public LiveData<List<PlaylistEntity>> loadSavedPlaylist() {
+        AppDatabase db = AppDatabase.getInstance(this.getApplication());
+        return db.playlistDao().loadSavedPlaylists();
     }
 
     @NonNull

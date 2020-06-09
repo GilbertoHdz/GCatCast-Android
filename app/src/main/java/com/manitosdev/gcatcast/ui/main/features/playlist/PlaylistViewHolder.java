@@ -40,6 +40,10 @@ public class PlaylistViewHolder extends RecyclerView.ViewHolder {
     name.setText(item.getName());
     desc.setText(item.getDesc());
     loadThumbnail(item.getThumbnail());
+    setMarkerIcon(item.isSaved());
+
+    btnInfo.setVisibility(item.isInfo() ? View.VISIBLE : View.GONE);
+    btnMarker.setVisibility(item.isMarker() ? View.VISIBLE : View.GONE);
 
     viewContainer.setOnClickListener(new View.OnClickListener() {
       @Override

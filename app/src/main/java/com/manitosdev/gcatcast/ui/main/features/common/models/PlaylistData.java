@@ -1,5 +1,7 @@
 package com.manitosdev.gcatcast.ui.main.features.common.models;
 
+import com.manitosdev.gcatcast.ui.main.db.entities.PlaylistEntity;
+
 /**
  * Created by gilbertohdz on 09/06/20.
  */
@@ -11,6 +13,10 @@ public class PlaylistData {
   private String url;
   private String type;
   private String thumbnail;
+
+  private boolean isInfo = true;
+  private boolean isMarker = true;
+  private boolean isSaved = false;
 
   public PlaylistData(String author, String name, String desc, String url, String type, String thumbnail) {
     this.author = author;
@@ -67,5 +73,44 @@ public class PlaylistData {
 
   public void setThumbnail(String thumbnail) {
     this.thumbnail = thumbnail;
+  }
+
+  public boolean isInfo() {
+    return isInfo;
+  }
+
+  public void setInfo(boolean info) {
+    isInfo = info;
+  }
+
+  public boolean isMarker() {
+    return isMarker;
+  }
+
+  public void setMarker(boolean marker) {
+    isMarker = marker;
+  }
+
+  public boolean isSaved() {
+    return isSaved;
+  }
+
+  public void setSaved(boolean saved) {
+    isSaved = saved;
+  }
+
+  public PlaylistEntity transformToEntity() {
+    return new PlaylistEntity(
+        this.getUrl(),
+        this.author,
+        this.name,
+        this.desc,
+        this.getUrl(),
+        this.getType(),
+        this.getThumbnail());
+  }
+
+  public static PlaylistData transformFromEntity(PlaylistEntity entity) {
+    return new PlaylistData(entity.getAuthor(), entity.getName(), entity.getDesc(), entity.getUrl(), entity.getType(), entity.getThumbnail());
   }
 }
