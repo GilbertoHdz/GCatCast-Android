@@ -1,8 +1,10 @@
 package com.manitosdev.gcatcast.ui.main.features.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 import com.manitosdev.gcatcast.R;
 
@@ -19,11 +21,23 @@ public class CCatWidget extends AppWidgetProvider {
 
     CharSequence widgetText = context.getString(R.string.appwidget_text);
     // Construct the RemoteViews object
-    RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.c_cat_widget);
-    views.setTextViewText(R.id.appwidget_text, widgetText);
+    RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.c_cat_widget);
+
+    Intent serviceIntent = new Intent(context, CCatWidgetService.class);
+    remoteViews.setRemoteAdapter(R.id.widget_list, serviceIntent);
+
+
+    int r = (int) (Math.random() * 0xff);
+    int g = (int) (Math.random() * 0xff);
+    int b = (int) (Math.random() * 0xff);
+    int color = (0xff << 24) + (r << 16) + (g << 8) + b;
+    remoteViews.setInt(R.id.frameLayout, "setBackgroundColor", color);
+
+    Intent intent = new Intent(context, CCatWidget.class);
+    // intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 
     // Instruct the widget manager to update the widget
-    appWidgetManager.updateAppWidget(appWidgetId, views);
+    appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
   }
 
   @Override
