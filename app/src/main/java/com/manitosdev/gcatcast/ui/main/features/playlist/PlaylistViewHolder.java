@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 import com.bumptech.glide.Glide;
 import com.manitosdev.gcatcast.R;
-import com.manitosdev.gcatcast.ui.main.api.models.search.RssItem;
+import com.manitosdev.gcatcast.ui.main.features.common.models.PlaylistData;
 
 /**
  * Created by gilbertohdz on 07/06/20.
@@ -36,10 +36,10 @@ public class PlaylistViewHolder extends RecyclerView.ViewHolder {
     viewContainer = (ConstraintLayout) itemView.findViewById(R.id.playlist_item_rss_feed_container);
   }
 
-  void bind(final RssItem item, final PlaylistAdapter.ItemActionClicked action, int position) {
-    name.setText(item.getTitle());
-    desc.setText(item.getDescription());
-    loadThumbnail(item.getEnclosure().getThumbnail());
+  void bind(final PlaylistData item, final PlaylistAdapter.ItemActionClicked action, int position) {
+    name.setText(item.getName());
+    desc.setText(item.getDesc());
+    loadThumbnail(item.getThumbnail());
 
     viewContainer.setOnClickListener(new View.OnClickListener() {
       @Override

@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.manitosdev.gcatcast.R;
-import com.manitosdev.gcatcast.ui.main.api.models.search.RssItem;
+import com.manitosdev.gcatcast.ui.main.features.common.models.PlaylistData;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,12 +24,12 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
     this._callback = actionCallback;
   }
 
-  private ArrayList<RssItem> items = new ArrayList<>();
+  private ArrayList<PlaylistData> items = new ArrayList<>();
 
   public interface ItemActionClicked {
-    void onItemClicked(RssItem rssItem, int position);
-    void markerClicked(RssItem rssItem);
-    void infoClicked(RssItem rssItem);
+    void onItemClicked(PlaylistData rssItem, int position);
+    void markerClicked(PlaylistData rssItem);
+    void infoClicked(PlaylistData rssItem);
   }
 
   @NonNull
@@ -52,13 +52,13 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
     return items.size();
   }
 
-  public void updateData(List<RssItem> rssItems) {
+  public void updateData(List<PlaylistData> rssItems) {
     items.clear();
     items.addAll(rssItems);
     notifyDataSetChanged();
   }
 
-  public ArrayList<RssItem> getPlaylist() {
+  public ArrayList<PlaylistData> getPlaylist() {
     return items;
   }
 }

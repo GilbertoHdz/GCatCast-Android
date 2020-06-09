@@ -18,7 +18,6 @@ import com.manitosdev.gcatcast.ui.main.features.common.adapter.PodcastAdapter;
 import com.manitosdev.gcatcast.ui.main.features.common.models.PodcastData;
 import com.manitosdev.gcatcast.ui.main.features.common.models.SmPodcast;
 import com.manitosdev.gcatcast.ui.main.features.main.MainViewModel;
-import io.reactivex.disposables.CompositeDisposable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +25,10 @@ public class SubscribedFragment extends Fragment {
 
   private MainViewModel mMainViewModel;
 
-  private RecyclerView mSusbcribedRecycler;
-  private PodcastAdapter mSusbcribedAdapter;
+  private RecyclerView mSubscribedRecycler;
+  private PodcastAdapter mSubscribedAdapter;
 
   private AppDatabase mDb;
-  private final CompositeDisposable mDisposable = new CompositeDisposable();
 
   public static SubscribedFragment newInstance() {
     return new SubscribedFragment();
@@ -56,7 +54,7 @@ public class SubscribedFragment extends Fragment {
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     mDb = AppDatabase.getInstance(requireActivity());
-    mSusbcribedAdapter = new PodcastAdapter(requireActivity(), mDb);
+    mSubscribedAdapter = new PodcastAdapter(requireActivity(), mDb);
     initializeRecycler(view);
   }
 
@@ -68,10 +66,10 @@ public class SubscribedFragment extends Fragment {
         GRID_SPAN
     );
 
-    mSusbcribedRecycler = (RecyclerView) view.findViewById(R.id.subscribedSectionRecycler);
-    mSusbcribedRecycler.setHasFixedSize(true);
-    mSusbcribedRecycler.setLayoutManager(gridLayoutManager);
-    mSusbcribedRecycler.setAdapter(mSusbcribedAdapter);
+    mSubscribedRecycler = (RecyclerView) view.findViewById(R.id.subscribedSectionRecycler);
+    mSubscribedRecycler.setHasFixedSize(true);
+    mSubscribedRecycler.setLayoutManager(gridLayoutManager);
+    mSubscribedRecycler.setAdapter(mSubscribedAdapter);
   }
 
   private void loadSavedPodCasts() {
@@ -84,7 +82,7 @@ public class SubscribedFragment extends Fragment {
           data.setSaved(true);
           podcasts.add(data);
         }
-        mSusbcribedAdapter.updateData(podcasts);
+        mSubscribedAdapter.updateData(podcasts);
       }
     });
   }

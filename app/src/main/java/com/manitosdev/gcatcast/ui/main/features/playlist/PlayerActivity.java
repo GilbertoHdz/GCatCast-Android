@@ -35,8 +35,10 @@ import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
 import com.manitosdev.gcatcast.ui.main.api.models.search.RssChannel;
 import com.manitosdev.gcatcast.ui.main.api.models.search.RssFeed;
 import com.manitosdev.gcatcast.ui.main.api.models.search.RssItem;
+import com.manitosdev.gcatcast.ui.main.api.network.AppExecutors;
 import com.manitosdev.gcatcast.ui.main.api.network.InternetCheck;
 import com.manitosdev.gcatcast.ui.main.db.AppDatabase;
+import com.manitosdev.gcatcast.ui.main.features.common.models.PlaylistData;
 import com.manitosdev.gcatcast.ui.main.features.main.MainViewModel;
 import java.util.ArrayList;
 import java.util.Formatter;
@@ -278,7 +280,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     if (isMediaControlActions) {
-      String nextToPlayUrl = mPlaylistAdapter.getPlaylist().get(currentPlaylistIndex).getEnclosure().getUrl();
+      String nextToPlayUrl = mPlaylistAdapter.getPlaylist().get(currentPlaylistIndex).getUrl();
       callPlaylistItem(nextToPlayUrl);
     }
   }
@@ -415,17 +417,16 @@ public class PlayerActivity extends AppCompatActivity {
   }
 
   private void renderUiByChannel(RssChannel channel) {
-    ArrayList<RssItem> items = new ArrayList<>();
+    ArrayList<PlaylistData> items = new ArrayList<>();
     for (RssItem media : channel.getItems()) {
       if (null != media.getEnclosure() && isAudioOrVideoType(media.getEnclosure().getType())) {
-        media.getEnclosure().setThumbnail(rssFeedThumbnailUrl);
-        items.add(media);
+        items.add(new PlaylistData(media.getAuthor(), media.getTitle(), media.getDescription(), media.getEnclosure().getUrl(), media.getEnclosure().getType(), rssFeedThumbnailUrl));
       }
     }
 
     // Initialize player and controls by the first element and with pause player
     if (!items.isEmpty()) {
-      localMediaUrl = items.get(0).getEnclosure().getUrl();
+      localMediaUrl = items.get(0).getUrl();
 
       currentPlaylistIndex = 0;
       _prev.setColorFilter(ContextCompat.getColor(this, R.color.colorErrorInverse));
@@ -471,19 +472,25 @@ public class PlayerActivity extends AppCompatActivity {
   public PlaylistAdapter.ItemActionClicked actionCallback() {
     return new PlaylistAdapter.ItemActionClicked() {
       @Override
-      public void onItemClicked(RssItem rssItem, int position) {
+      public void onItemClicked(PlaylistData rssItem, int position) {
         currentPlaylistIndex = position;
-        callPlaylistItem(rssItem.getEnclosure().getUrl());
+        callPlaylistItem(rssItem.getUrl());
         changeItemToPlay(true, false);
       }
 
       @Override
-      public void markerClicked(RssItem rssItem) {
-
+      public void markerClicked(PlaylistData rssItem) {
+        AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+          @Override
+          public void run() {
+            mDb.playlistDao().deletePlaylist(rssItem.transformToEntity());
+            mDb.playlistDao().insertPlaylist(rssItem.transformToEntity());
+          }
+        });
       }
 
       @Override
-      public void infoClicked(RssItem rssItem) {
+      public void infoClicked(PlaylistData rssItem) {
         // TODO(PENDING) here we will create a new popup screen with podcast or track description
       }
     };
