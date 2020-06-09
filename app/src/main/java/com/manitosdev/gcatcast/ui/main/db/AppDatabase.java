@@ -5,14 +5,17 @@ import android.util.Log;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import com.manitosdev.gcatcast.ui.main.db.dao.PlaylistDao;
 import com.manitosdev.gcatcast.ui.main.db.dao.PodCastDao;
+import com.manitosdev.gcatcast.ui.main.db.entities.PlaylistEntity;
 import com.manitosdev.gcatcast.ui.main.db.entities.PodCastEntity;
 
 /**
  * Created by gilbertohdz on 06/06/20.
  */
 @Database(entities = {
-    PodCastEntity.class
+    PodCastEntity.class,
+    PlaylistEntity.class
 }, version = 1, exportSchema = true)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -38,4 +41,6 @@ public abstract class AppDatabase extends RoomDatabase {
   }
 
   public abstract PodCastDao podCastDao();
+
+  public abstract PlaylistDao playlistDao();
 }
