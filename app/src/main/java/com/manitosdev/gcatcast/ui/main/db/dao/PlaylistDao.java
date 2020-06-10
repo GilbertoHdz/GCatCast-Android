@@ -29,4 +29,7 @@ public interface PlaylistDao {
 
   @Query("SELECT * from playlist where id = :url LIMIT 1")
   public LiveData<PlaylistEntity> loadPlaylistByUrl(String url);
+
+  @Query("SELECT * from playlist")
+  public List<PlaylistEntity> loadPlaylist();
 }

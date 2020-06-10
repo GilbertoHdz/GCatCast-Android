@@ -27,12 +27,6 @@ public class CCatWidget extends AppWidgetProvider {
     remoteViews.setRemoteAdapter(R.id.widget_list, serviceIntent);
 
 
-    int r = (int) (Math.random() * 0xff);
-    int g = (int) (Math.random() * 0xff);
-    int b = (int) (Math.random() * 0xff);
-    int color = (0xff << 24) + (r << 16) + (g << 8) + b;
-    remoteViews.setInt(R.id.frameLayout, "setBackgroundColor", color);
-
     Intent intent = new Intent(context, CCatWidget.class);
     // intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 

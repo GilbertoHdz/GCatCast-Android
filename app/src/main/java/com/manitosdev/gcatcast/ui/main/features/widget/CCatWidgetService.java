@@ -2,10 +2,14 @@ package com.manitosdev.gcatcast.ui.main.features.widget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import com.manitosdev.gcatcast.R;
 import com.manitosdev.gcatcast.ui.main.db.AppDatabase;
+import com.manitosdev.gcatcast.ui.main.db.entities.PlaylistEntity;
+import com.manitosdev.gcatcast.ui.main.features.common.models.PlaylistData;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +25,7 @@ public class CCatWidgetService extends RemoteViewsService {
 
 class CCatWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
+  private List<PlaylistData> playlistItems = new ArrayList<>();
   private Context mContext;
   private AppDatabase mDb;
 
@@ -34,17 +39,34 @@ class CCatWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
   @Override
   public void onCreate() {
-
+    Log.i("EXO", "onCreate");
   }
 
   @Override
   public void onDataSetChanged() {
+    new AsyncTask<Context, Void, List<PlaylistData>>() {
 
+      @Override
+      protected List<PlaylistData> doInBackground(Context... contexts) {
+        AppDatabase database = AppDatabase.getInstance(mContext);
+        for (PlaylistEntity entity : database.playlistDao().loadPlaylist()) {
+          playlistItems.add(PlaylistData.transformFromEntity(entity));
+        }
+
+        return playlistItems;
+      }
+
+      @Override
+      protected void onPostExecute(List<PlaylistData> movieEntities) {
+        super.onPostExecute(movieEntities);
+      }
+
+    }.execute(mContext);
   }
 
   @Override
   public void onDestroy() {
-
+    Log.i("EXO", "onDestroy");
   }
 
   @Override
