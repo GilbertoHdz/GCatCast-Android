@@ -1,13 +1,16 @@
 package com.manitosdev.gcatcast.ui.main.features.playlist;
 
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -65,6 +68,8 @@ public class PlayerV2Activity extends AppCompatActivity {
   private static final String KEY_SERVICE_STATE = "playerV2Activity.service.state.value";
 
   private MainViewModel mMainViewModel;
+  private ArrayList<Audio> audioList;
+
   private PlaylistAdapter mPlaylistAdapter;
 
   private AppDatabase mDb;
@@ -165,6 +170,29 @@ public class PlayerV2Activity extends AppCompatActivity {
       // service is active
       player.stopSelf();
     }
+  }
+
+  private void loadAudio() {
+    ContentResolver contentResolver = getContentResolver();
+
+    Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+    String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
+    String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
+    Cursor cursor = contentResolver.query(uri, null, selection, null, sortOrder);
+
+    if (cursor != null && cursor.getCount() > 0) {
+      audioList = new ArrayList<>();
+      while (cursor.moveToNext()) {
+        String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+        String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+        String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+        String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+
+        // Save to audioList
+        audioList.add(new Audio(data, title, album, artist));
+      }
+    }
+    cursor.close();
   }
 
   //Binding this Client to the AudioPlayer Service
