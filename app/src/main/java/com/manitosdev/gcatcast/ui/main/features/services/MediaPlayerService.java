@@ -125,6 +125,45 @@ public class MediaPlayerService extends Service
     // Invoked indicating the completion of a seek operation.
   }
 
+  /**
+   * 5.- The system calls this method when an activity, requests the service be started
+   * @param intent
+   * @param flags
+   * @param startId
+   * @return
+   */
+  @Override
+  public int onStartCommand(Intent intent, int flags, int startId) {
+    try {
+      // An audio file is passed to the service through putExtra();
+      mediaFile = intent.getExtras().getString("media");
+    } catch (NullPointerException e) {
+      stopSelf();
+    }
+
+    // Request audio focus
+    if (requestAudioFocus() == false) {
+      // Could not gain focus
+      stopSelf();
+    }
+
+    if (mediaFile != null && mediaFile != "") {
+      initMediaPlayer();
+    }
+
+    return super.onStartCommand(intent, flags, startId);
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    if (mediaPlayer != null) {
+      stopMedia();
+      mediaPlayer.release();
+    }
+    removeAudioFocus();
+  }
+
   private void initMediaPlayer() {
     mediaPlayer = new MediaPlayer();
     // Set up MediaPlayer event listeners
