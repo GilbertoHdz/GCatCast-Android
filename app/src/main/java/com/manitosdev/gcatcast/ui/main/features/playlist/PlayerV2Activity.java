@@ -58,9 +58,11 @@ public class PlayerV2Activity extends AppCompatActivity {
 
   private static final String TAG = PlayerV2Activity.class.getSimpleName();
 
-  public static final String ARG_RSS_FEED_URL = "playerActivity.feed.rss.url.value";
-  public static final String ARG_RSS_FEED_THUMBNAIL_URL = "playerActivity.feed.rss.thumbnail.url.value";
-  private static final String KEY_MEDIA_URL = "playerActivity.media.url.value";
+  public static final String ARG_RSS_FEED_URL = "playerV2Activity.feed.rss.url.value";
+  public static final String ARG_RSS_FEED_THUMBNAIL_URL = "playerV2Activity.feed.rss.thumbnail.url.value";
+
+  private static final String KEY_MEDIA_URL = "playerV2Activity.media.url.value";
+  private static final String KEY_SERVICE_STATE = "playerV2Activity.service.state.value";
 
   private MainViewModel mMainViewModel;
   private PlaylistAdapter mPlaylistAdapter;
@@ -143,8 +145,26 @@ public class PlayerV2Activity extends AppCompatActivity {
 
   @Override
   public void onSaveInstanceState(@NonNull Bundle outState) {
+    outState.putString(KEY_MEDIA_URL, localMediaUrl);
+    outState.putBoolean(KEY_SERVICE_STATE, serviceBound);
     super.onSaveInstanceState(outState);
-    outState.putString(KEY_MEDIA_URL, "");
+  }
+
+  @Override
+  public void onRestoreInstanceState(Bundle savedInstanceState) {
+    super.onRestoreInstanceState(savedInstanceState);
+    serviceBound = savedInstanceState.getBoolean(KEY_SERVICE_STATE);
+    localMediaUrl = savedInstanceState.getString(KEY_MEDIA_URL);
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    if (serviceBound) {
+      unbindService(serviceConnection);
+      // service is active
+      player.stopSelf();
+    }
   }
 
   //Binding this Client to the AudioPlayer Service
