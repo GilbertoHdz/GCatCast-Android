@@ -1,12 +1,16 @@
 package com.manitosdev.gcatcast.ui.main.features.services;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import java.io.IOException;
@@ -40,6 +44,11 @@ public class MediaPlayerService extends Service
    * 3.- Handling Audio Focus
    */
   private AudioManager audioManager;
+
+  // Handle incoming phone calls
+  private boolean ongoingCall = false;
+  private PhoneStateListener phoneStateListener;
+  private TelephonyManager telephonyManager;
 
   @Nullable
   @Override
@@ -232,6 +241,63 @@ public class MediaPlayerService extends Service
     return AudioManager.AUDIOFOCUS_REQUEST_GRANTED ==
         audioManager.abandonAudioFocus(this);
   }
+
+  /**
+   * Config change of audio outputs
+   */
+  private BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      // pause audio on ACTION_AUDIO_BECOMING_NOISY
+      pauseMedia();
+      // TODO(NOTIFICATION) buildNotification(PlaybackStatus.PAUSED);
+    }
+  };
+
+  private void registerBecomingNoisyReceiver() {
+    // register after getting audio focus
+    IntentFilter intentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+    registerReceiver(becomingNoisyReceiver, intentFilter);
+  }
+
+  /**
+   * Handle incoming phone calls
+   */
+  private void callStateListener() {
+    // Get the telephony manager
+    telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+    //Starting listening for PhoneState changes
+    phoneStateListener = new PhoneStateListener() {
+      @Override
+      public void onCallStateChanged(int state, String incomingNumber) {
+        switch (state) {
+          //if at least one call exists or the phone is ringing
+          //pause the MediaPlayer
+          case TelephonyManager.CALL_STATE_OFFHOOK:
+          case TelephonyManager.CALL_STATE_RINGING:
+            if (mediaPlayer != null) {
+              pauseMedia();
+              ongoingCall = true;
+            }
+            break;
+          case TelephonyManager.CALL_STATE_IDLE:
+            // Phone idle. Start playing.
+            if (mediaPlayer != null) {
+              if (ongoingCall) {
+                ongoingCall = false;
+                resumeMedia();
+              }
+            }
+            break;
+        }
+      }
+    };
+    // Register the listener with the telephony manager
+    // Listen for changes to the device call state.
+    telephonyManager.listen(phoneStateListener,
+        PhoneStateListener.LISTEN_CALL_STATE);
+  }
+
 
   public class LocalBinder extends Binder {
     public MediaPlayerService getService() {
