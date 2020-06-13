@@ -1,5 +1,7 @@
 package com.manitosdev.gcatcast.ui.main.features.services;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -13,6 +15,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.session.MediaSessionManager;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.media.MediaMetadataCompat;
@@ -22,13 +25,11 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import androidx.annotation.Nullable;
-import androidx.media.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import com.manitosdev.gcatcast.R;
 import com.manitosdev.gcatcast.ui.main.features.playlist.Audio;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import static com.manitosdev.gcatcast.ui.main.features.playlist.PlayerV2Activity.Broadcast_PLAY_NEW_AUDIO;
 
 /**
  * Created by gilbertohdz on 13/06/20.
@@ -50,8 +51,6 @@ public class MediaPlayerService extends Service
    * 2.- Config media player
    */
   private MediaPlayer mediaPlayer;
-  // path to the audio file
-  private String mediaFile;
   // Used to pause/resume MediaPlayer
   private int resumePosition;
 
@@ -68,10 +67,16 @@ public class MediaPlayerService extends Service
   private TelephonyManager telephonyManager;
 
   // List of available Audio files
-  private ArrayList<Audio> audioList;
+  private ArrayList<Audio> audioList; // for now we passing the url through intent
+  private String _localMediaUrl;
   private int audioIndex = -1;
   private Audio activeAudio; // an object of the currently playing audio
 
+  /**
+   * Key field for broadcast
+   */
+  public static final String Broadcast_PLAY_NEW_AUDIO = "com.manitosdev.gcatcast.ui.main.features.services.PlayNewAudio";
+  public static final String Broadcast_MEDIA_URL_VALUE = "com.manitosdev.gcatcast.ui.main.features.services.MEDIA_URL";
 
   /**
    * User Interaction with notification
@@ -81,6 +86,7 @@ public class MediaPlayerService extends Service
   public static final String ACTION_PREVIOUS = "com.manitosdev.gcatcast.ui.main.features.ACTION_PREVIOUS";
   public static final String ACTION_NEXT = "com.manitosdev.gcatcast.ui.main.features.ACTION_NEXT";
   public static final String ACTION_STOP = "com.manitosdev.gcatcast.ui.main.features.ACTION_STOP";
+  private final String MEDIA_CHANNEL_ID = "media_playback_channel";
 
   //MediaSession
   private MediaSessionManager mediaSessionManager;
@@ -199,11 +205,28 @@ public class MediaPlayerService extends Service
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
     try {
-      // An audio file is passed to the service through putExtra();
-      mediaFile = intent.getExtras().getString("media");
+      // You only need to create the channel on API 26+ devices
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        createChannel();
+      }
+
+      // Load data from SharedPreferences
+      StorageUtil storage = new StorageUtil(getApplicationContext());
+      audioList = storage.loadAudio();
+      audioIndex = storage.loadAudioIndex();
+
+      if (audioIndex != -1 && audioIndex < audioList.size()) {
+        // index is in a valid range
+        activeAudio = audioList.get(audioIndex);
+      } else {
+        stopSelf();
+      }
     } catch (NullPointerException e) {
       stopSelf();
     }
+
+    // get mediaUrl from intent
+    //_localMediaUrl = intent.getExtras().getString(Broadcast_MEDIA_URL_VALUE);
 
     // Request audio focus
     if (requestAudioFocus() == false) {
@@ -211,9 +234,19 @@ public class MediaPlayerService extends Service
       stopSelf();
     }
 
-    if (mediaFile != null && mediaFile != "") {
-      initMediaPlayer();
+    if (mediaSessionManager == null) {
+      try {
+        initMediaSession();
+        initMediaPlayer();
+      } catch (RemoteException e) {
+        e.printStackTrace();
+        stopSelf();
+      }
+      buildNotification(PlaybackStatus.PLAYING);
     }
+
+    // Handle Intent action from MediaSession.TransportControls
+    handleIncomingActions(intent);
 
     return super.onStartCommand(intent, flags, startId);
   }
@@ -256,7 +289,7 @@ public class MediaPlayerService extends Service
     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
     try {
       // Set the data source to the mediaFile location
-      mediaPlayer.setDataSource(mediaFile);
+      mediaPlayer.setDataSource(activeAudio.getData());
     } catch (IOException e) {
       e.printStackTrace();
       stopSelf();
@@ -428,16 +461,24 @@ public class MediaPlayerService extends Service
    */
   private void buildNotification(PlaybackStatus playbackStatus) {
 
-    int notificationAction = android.R.drawable.ic_media_pause;//needs to be initialized
+    /**
+     * Notification actions -> playbackAction()
+     *  0 -> Play
+     *  1 -> Pause
+     *  2 -> Next track
+     *  3 -> Previous track
+     */
+
+    int notificationAction = R.drawable.exo_controls_pause;//needs to be initialized
     PendingIntent play_pauseAction = null;
 
     // Build a new notification according to the current state of the MediaPlayer
     if (playbackStatus == PlaybackStatus.PLAYING) {
-      notificationAction = android.R.drawable.ic_media_pause;
+      notificationAction = R.drawable.exo_controls_pause;
       // create the pause action
       play_pauseAction = playbackAction(1);
     } else if (playbackStatus == PlaybackStatus.PAUSED) {
-      notificationAction = android.R.drawable.ic_media_play;
+      notificationAction = R.drawable.exo_controls_play;
       // create the play action
       play_pauseAction = playbackAction(0);
     }
@@ -445,16 +486,16 @@ public class MediaPlayerService extends Service
     Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.exo_controls_vr); //replace with your own image
 
     // Create a new Notification
-    NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+    NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this, MEDIA_CHANNEL_ID)
         .setShowWhen(false)
         // Set the Notification style
-        .setStyle(new NotificationCompat.MediaStyle()
+        .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
             // Attach our MediaSession token
             .setMediaSession(mediaSession.getSessionToken())
             // Show our playback controls in the compact notification view.
             .setShowActionsInCompactView(0, 1, 2))
         // Set the Notification color
-        .setColor(getResources().getColor(R.color.colorPrimary))
+        .setColor(getResources().getColor(R.color.colorAccent))
         // Set the large and small icons
         .setLargeIcon(largeIcon)
         .setSmallIcon(android.R.drawable.stat_sys_headset)
@@ -463,9 +504,9 @@ public class MediaPlayerService extends Service
         .setContentTitle(activeAudio.getAlbum())
         .setContentInfo(activeAudio.getTitle())
         // Add playback actions
-        .addAction(android.R.drawable.ic_media_previous, "previous", playbackAction(3))
+        .addAction(R.drawable.exo_controls_previous, "previous", playbackAction(3))
         .addAction(notificationAction, "pause", play_pauseAction)
-        .addAction(android.R.drawable.ic_media_next, "next", playbackAction(2));
+        .addAction(R.drawable.exo_controls_next, "next", playbackAction(2));
 
     ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notificationBuilder.build());
   }
@@ -502,6 +543,32 @@ public class MediaPlayerService extends Service
     // Register playNewMedia receiver
     IntentFilter filter = new IntentFilter(Broadcast_PLAY_NEW_AUDIO);
     registerReceiver(playNewAudio, filter);
+  }
+
+  private void createChannel() {
+    // The id of the channel.
+    String id = MEDIA_CHANNEL_ID;
+    // The user-visible name of the channel.
+    CharSequence name = "Media playback";
+    // The user-visible description of the channel.
+    String description = "Media playback controls";
+    int importance;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      importance = NotificationManager.IMPORTANCE_LOW;
+    } else {
+      importance = 0;
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      NotificationChannel mChannel = new NotificationChannel(id, name, importance);
+      // Configure the notification channel.
+      mChannel.setDescription(description);
+      mChannel.setShowBadge(false);
+      mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+      ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(
+          mChannel
+      );
+
+    }
   }
 
   private void playMedia() {

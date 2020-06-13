@@ -52,7 +52,11 @@ import com.manitosdev.gcatcast.ui.main.features.services.MediaPlayerService;
 import com.manitosdev.gcatcast.ui.main.features.services.StorageUtil;
 import java.util.ArrayList;
 import java.util.Formatter;
+import java.util.List;
 import java.util.Locale;
+
+import static com.manitosdev.gcatcast.ui.main.features.services.MediaPlayerService.Broadcast_MEDIA_URL_VALUE;
+import static com.manitosdev.gcatcast.ui.main.features.services.MediaPlayerService.Broadcast_PLAY_NEW_AUDIO;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -77,7 +81,6 @@ public class PlayerV2Activity extends AppCompatActivity {
 
   private MediaPlayerService player;
   boolean serviceBound = false;
-  public static final String Broadcast_PLAY_NEW_AUDIO = "com.manitosdev.gcatcast.ui.main.features.playlist.PlayNewAudio";
   // List of available Audio files
   private ArrayList<Audio> audioList;
 
@@ -241,6 +244,7 @@ public class PlayerV2Activity extends AppCompatActivity {
       storage.storeAudioIndex(audioIndex);
 
       Intent playerIntent = new Intent(this, MediaPlayerService.class);
+      //playerIntent.putExtra(Broadcast_MEDIA_URL_VALUE, audioIndex);
       startService(playerIntent);
       bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     } else {
@@ -251,6 +255,7 @@ public class PlayerV2Activity extends AppCompatActivity {
       // Service is active
       // Send a broadcast to the service -> PLAY_NEW_AUDIO
       Intent broadcastIntent = new Intent(Broadcast_PLAY_NEW_AUDIO);
+      //broadcastIntent.putExtra(Broadcast_MEDIA_URL_VALUE, audioIndex);
       sendBroadcast(broadcastIntent);
     }
   }
@@ -410,6 +415,7 @@ public class PlayerV2Activity extends AppCompatActivity {
         if (internet) {
           assert rssFeedUrl != null;
           mMainViewModel.loadRssFeedsByPodcast(rssFeedUrl);
+          initMediaControls();
         } else {
           showErrorMessage(R.string.error_network_message);
         }
@@ -450,15 +456,18 @@ public class PlayerV2Activity extends AppCompatActivity {
 
   private void renderUiByChannel(RssChannel channel) {
     ArrayList<PlaylistData> items = new ArrayList<>();
+    ArrayList<Audio> storeAudio = new ArrayList<>();
     for (RssItem media : channel.getItems()) {
       if (null != media.getEnclosure() && isAudioOrVideoType(media.getEnclosure().getType())) {
         items.add(new PlaylistData(media.getAuthor(), media.getTitle(), media.getDescription(), media.getEnclosure().getUrl(), media.getEnclosure().getType(), rssFeedThumbnailUrl));
+        storeAudio.add(new Audio(media.getEnclosure().getUrl(), media.getTitle(), media.getSummary(), media.getAuthor()));
       }
     }
 
     // Initialize player and controls by the first element and with pause player
     if (!items.isEmpty()) {
       localMediaUrl = items.get(0).getUrl();
+      audioList = storeAudio;
 
       currentPlaylistIndex = 0;
       _prev.setColorFilter(ContextCompat.getColor(this, R.color.colorErrorInverse));
@@ -474,6 +483,7 @@ public class PlayerV2Activity extends AppCompatActivity {
 
   private void callPlaylistItem(String url) {
     localMediaUrl = url;
+    playAudio(0);
   }
 
   private void loadRssFeed() {
