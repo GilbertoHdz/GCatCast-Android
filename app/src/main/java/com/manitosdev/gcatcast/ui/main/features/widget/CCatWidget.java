@@ -19,7 +19,6 @@ public class CCatWidget extends AppWidgetProvider {
       int appWidgetId
   ) {
 
-    CharSequence widgetText = context.getString(R.string.appwidget_text);
     // Construct the RemoteViews object
     RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.c_cat_widget);
 
