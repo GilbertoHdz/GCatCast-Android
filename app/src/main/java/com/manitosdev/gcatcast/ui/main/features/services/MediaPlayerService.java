@@ -13,7 +13,12 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import androidx.annotation.Nullable;
+import com.manitosdev.gcatcast.ui.main.features.main.MainActivity;
+import com.manitosdev.gcatcast.ui.main.features.playlist.Audio;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import static com.manitosdev.gcatcast.ui.main.features.playlist.PlayerV2Activity.Broadcast_PLAY_NEW_AUDIO;
 
 /**
  * Created by gilbertohdz on 13/06/20.
@@ -45,15 +50,37 @@ public class MediaPlayerService extends Service
    */
   private AudioManager audioManager;
 
-  // Handle incoming phone calls
+  /**
+   * Handle incoming phone calls
+   */
   private boolean ongoingCall = false;
   private PhoneStateListener phoneStateListener;
   private TelephonyManager telephonyManager;
+
+  // List of available Audio files
+  private ArrayList<Audio> audioList;
+  private int audioIndex = -1;
+  private Audio activeAudio; // an object of the currently playing audio
 
   @Nullable
   @Override
   public IBinder onBind(Intent intent) {
     return iBinder;
+  }
+
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    // Perform one-time setup procedures
+
+    // Manage incoming phone calls during playback.
+    // Pause MediaPlayer on incoming call,
+    // Resume on hangup.
+    callStateListener();
+    // ACTION_AUDIO_BECOMING_NOISY -- change in audio outputs -- BroadcastReceiver
+    registerBecomingNoisyReceiver();
+    // Listen for new Audio to play -- BroadcastReceiver
+    register_playNewAudio();
   }
 
   @Override
@@ -171,6 +198,19 @@ public class MediaPlayerService extends Service
       mediaPlayer.release();
     }
     removeAudioFocus();
+    // Disable the PhoneStateListener
+    if (phoneStateListener != null) {
+      telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+    }
+
+    // TODO(NOTIFICATION) removeNotification();
+
+    // unregister BroadcastReceivers
+    unregisterReceiver(becomingNoisyReceiver);
+    unregisterReceiver(playNewAudio);
+
+    // clear cached playlist
+    new StorageUtil(getApplicationContext()).clearCachedAudioPlaylist();
   }
 
   private void initMediaPlayer() {
@@ -194,6 +234,35 @@ public class MediaPlayerService extends Service
       stopSelf();
     }
     mediaPlayer.prepareAsync();
+  }
+
+  private BroadcastReceiver playNewAudio = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+      // Get the new media index form SharedPreferences
+      audioIndex = new StorageUtil(getApplicationContext()).loadAudioIndex();
+      if (audioIndex != -1 && audioIndex < audioList.size()) {
+        // index is in a valid range
+        activeAudio = audioList.get(audioIndex);
+      } else {
+        stopSelf();
+      }
+
+      // A PLAY_NEW_AUDIO action received
+      // reset mediaPlayer to play the new Audio
+      stopMedia();
+      mediaPlayer.reset();
+      initMediaPlayer();
+      // TODO(NOTIFICATION) updateMetaData();
+      // TODO(NOTIFICATION) buildNotification(PlaybackStatus.PLAYING);
+    }
+  };
+
+  private void register_playNewAudio() {
+    // Register playNewMedia receiver
+    IntentFilter filter = new IntentFilter(Broadcast_PLAY_NEW_AUDIO);
+    registerReceiver(playNewAudio, filter);
   }
 
   private void playMedia() {

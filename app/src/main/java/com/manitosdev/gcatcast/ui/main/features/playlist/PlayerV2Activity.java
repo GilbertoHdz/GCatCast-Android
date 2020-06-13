@@ -49,6 +49,7 @@ import com.manitosdev.gcatcast.ui.main.db.AppDatabase;
 import com.manitosdev.gcatcast.ui.main.features.common.models.PlaylistData;
 import com.manitosdev.gcatcast.ui.main.features.main.MainViewModel;
 import com.manitosdev.gcatcast.ui.main.features.services.MediaPlayerService;
+import com.manitosdev.gcatcast.ui.main.features.services.StorageUtil;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.Locale;
@@ -68,7 +69,6 @@ public class PlayerV2Activity extends AppCompatActivity {
   private static final String KEY_SERVICE_STATE = "playerV2Activity.service.state.value";
 
   private MainViewModel mMainViewModel;
-  private ArrayList<Audio> audioList;
 
   private PlaylistAdapter mPlaylistAdapter;
 
@@ -77,6 +77,10 @@ public class PlayerV2Activity extends AppCompatActivity {
 
   private MediaPlayerService player;
   boolean serviceBound = false;
+  public static final String Broadcast_PLAY_NEW_AUDIO = "com.manitosdev.gcatcast.ui.main.features.playlist.PlayNewAudio";
+  // List of available Audio files
+  private ArrayList<Audio> audioList;
+
   private int currentPlaylistIndex;
 
   private TextView _error_message;
@@ -145,7 +149,6 @@ public class PlayerV2Activity extends AppCompatActivity {
     }
 
     checkNetworkConnection();
-    playAudio("https://upload.wikimedia.org/wikipedia/commons/6/6c/Grieg_Lyric_Pieces_Kobold.ogg");
   }
 
   @Override
@@ -229,16 +232,26 @@ public class PlayerV2Activity extends AppCompatActivity {
     return videoSource;
   }
 
-  private void playAudio(String media) {
+  private void playAudio(int audioIndex) {
     //Check is service is active
     if (!serviceBound) {
+      // Store Serializable audioList to SharedPreferences
+      StorageUtil storage = new StorageUtil(getApplicationContext());
+      storage.storeAudio(audioList);
+      storage.storeAudioIndex(audioIndex);
+
       Intent playerIntent = new Intent(this, MediaPlayerService.class);
-      playerIntent.putExtra("media", media);
       startService(playerIntent);
       bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     } else {
-      //Service is active
-      //Send media with BroadcastReceiver
+      // Store the new audioIndex to SharedPreferences
+      StorageUtil storage = new StorageUtil(getApplicationContext());
+      storage.storeAudioIndex(audioIndex);
+
+      // Service is active
+      // Send a broadcast to the service -> PLAY_NEW_AUDIO
+      Intent broadcastIntent = new Intent(Broadcast_PLAY_NEW_AUDIO);
+      sendBroadcast(broadcastIntent);
     }
   }
 
@@ -461,7 +474,6 @@ public class PlayerV2Activity extends AppCompatActivity {
 
   private void callPlaylistItem(String url) {
     localMediaUrl = url;
-    playAudio(localMediaUrl);
   }
 
   private void loadRssFeed() {
