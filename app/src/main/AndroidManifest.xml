@@ -34,13 +34,11 @@
         <activity
             android:name=".ui.main.features.playlist.PlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_player"
             android:theme="@style/FullscreenTheme" />
 
         <activity
             android:name=".ui.main.features.playlist.PlayerV2Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_player"
             android:theme="@style/FullscreenTheme" />
 
         <activity android:name=".ui.main.features.main.MainActivity">

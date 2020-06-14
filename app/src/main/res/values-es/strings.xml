@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_tab_popular">Populares</string>
+    <string name="main_tab_discovery">Descrubrir</string>
+    <string name="main_tab_subscribed">Subscrito</string>
+    <string name="error_generic_message">Ah ocurrido un error, por favor intenta de nuevo.</string>
+    <string name="error_network_message">No hay connexión a internet, por favor connectar internet.</string>
+    <string name="subscribed_my_playlist">Mis lista de reproducción</string>
+    <string name="common_category_name">Nombre Categoría</string>
+    <string name="common_more">Más</string>
+    <string name="common_action_retry">Re-intentar</string>
+    <string name="subscribed_my_podcast">Mis Podcast subscritos</string>
+</resources>

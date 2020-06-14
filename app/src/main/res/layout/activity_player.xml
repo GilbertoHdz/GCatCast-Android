@@ -205,7 +205,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Retry"
+        android:text="@string/common_action_retry"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/player_view_error_message_text"
         app:layout_constraintStart_toStartOf="@id/player_view_error_message_text"

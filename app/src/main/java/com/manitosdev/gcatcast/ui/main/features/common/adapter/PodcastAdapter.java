@@ -18,7 +18,6 @@ import com.manitosdev.gcatcast.ui.main.features.common.models.LgPodcast;
 import com.manitosdev.gcatcast.ui.main.features.common.models.PodcastData;
 import com.manitosdev.gcatcast.ui.main.features.common.models.SmPodcast;
 import com.manitosdev.gcatcast.ui.main.features.playlist.PlayerActivity;
-import com.manitosdev.gcatcast.ui.main.features.playlist.PlayerV2Activity;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,9 +127,9 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if (null != xmlUrl && !xmlUrl.isEmpty()) {
           if (xmlUrl.contains(".xml")) {
-            Intent intent = new Intent(mContext, PlayerV2Activity.class);
-            intent.putExtra(PlayerV2Activity.ARG_RSS_FEED_URL, podcast.getRssUrl());
-            intent.putExtra(PlayerV2Activity.ARG_RSS_FEED_THUMBNAIL_URL, podcast.getUrlImg());
+            Intent intent = new Intent(mContext, PlayerActivity.class);
+            intent.putExtra(PlayerActivity.ARG_RSS_FEED_URL, podcast.getRssUrl());
+            intent.putExtra(PlayerActivity.ARG_RSS_FEED_THUMBNAIL_URL, podcast.getUrlImg());
             mContext.startActivity(intent);
           } else {
             Log.w(TAG, "url not supported");

@@ -2,17 +2,18 @@
 
     <!-- MAIN -->
     <string name="app_name" translatable="false">GCat Cast</string>
-    <string name="main_tab_popular">Popular</string>
+    <string name="main_tab_popular">Populars</string>
     <string name="main_tab_discovery">Discovery</string>
     <string name="main_tab_subscribed">Subscribed</string>
     <string name="error_generic_message">An error has occurred, Please try again.</string>
     <string name="error_network_message">No internet connection, Please connect network.</string>
 
-    <string name="title_activity_player">PlayerActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
+    <string name="subscribed_my_playlist">My Playlist</string>
+    <string name="subscribed_my_podcast">My PodCast subscribed</string>
+
+    <string name="common_category_name">Category name</string>
+    <string name="common_more">More</string>
+    <string name="common_action_retry">Retry</string>
 
     <!-- POPULAR -->
 

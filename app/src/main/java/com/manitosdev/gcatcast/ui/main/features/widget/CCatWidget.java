@@ -205,8 +205,7 @@ public class CCatWidget extends AppWidgetProvider {
     String defaultUrl = "http://media-podcast.open.ac.uk/feeds/greek-heroes/desktop-all/greekheroesaudio01.mp3";
     String defaultName = "Achilles";
     String defaultAuthor = "The Open University";
-    String defaultDesc = "The lowdown on what popular culture chooses to keep in its portrayals of the Greek hero Achilles … and what gets left out.";
-    audioList.add(new Audio(defaultUrl, defaultName, defaultAuthor, defaultDesc));
+    audioList.add(new Audio(defaultUrl, defaultName, defaultAuthor, defaultAuthor));
   }
 
   private static void loadAsyncData(Context context) {

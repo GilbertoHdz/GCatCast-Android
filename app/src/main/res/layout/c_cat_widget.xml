@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorOnBackground"
@@ -20,10 +21,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:gravity="center_vertical"
-            android:text="Titulo"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="@color/colorBackground"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:text="Title" />
 
         <TextView
             android:id="@+id/widgetAuthorTxt"
@@ -31,10 +32,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:gravity="center_vertical"
-            android:text="Author"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/colorBackground"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:text="Author" />
     </LinearLayout>
 
     <ImageView
