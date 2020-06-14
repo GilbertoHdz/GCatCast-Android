@@ -498,8 +498,8 @@ public class MediaPlayerService extends Service
         .setSmallIcon(android.R.drawable.stat_sys_headset)
         // Set Notification content information
         .setContentText(activeAudio.getArtist())
-        .setContentTitle(activeAudio.getAlbum())
-        .setContentInfo(activeAudio.getTitle())
+        .setContentTitle(activeAudio.getTitle())
+        .setContentInfo(activeAudio.getAlbum())
         // Add playback actions
         .addAction(R.drawable.exo_controls_previous, "previous", playbackAction(3))
         .addAction(notificationAction, "pause", play_pauseAction)

@@ -92,7 +92,7 @@ public class CCatWidget extends AppWidgetProvider {
     Intent servicesPlayAction = new Intent(context, MediaPlayerService.class);
 
     StorageUtil storage = new StorageUtil(context.getApplicationContext());
-    int audioIndex = storage.loadAudioIndex() + 1;
+    int audioIndex = storage.loadAudioIndex();
     if (audioIndex == audioList.size()) audioIndex = 0;
 
     if (ACTION_NEXT.equals(intent.getAction())) {
