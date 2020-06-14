@@ -11,7 +11,6 @@ import android.os.IBinder;
 import android.widget.RemoteViews;
 import com.manitosdev.gcatcast.R;
 import com.manitosdev.gcatcast.ui.main.features.playlist.Audio;
-import com.manitosdev.gcatcast.ui.main.features.playlist.PlayerV2Activity;
 import com.manitosdev.gcatcast.ui.main.features.services.MediaPlayerService;
 import com.manitosdev.gcatcast.ui.main.features.services.StorageUtil;
 import java.util.ArrayList;
@@ -29,6 +28,10 @@ public class CCatWidget extends AppWidgetProvider {
   private ArrayList<Audio> audioList; // List of available Audio files
   private Context mContext;
 
+  private static final String ACTION_SIMPLEAPPWIDGET = "ACTION_BROADCASTWIDGETSAMPLE";
+  private static final String EXTRA_VAL = "EXTRA_BROADCASTWIDGETSAMPLE";
+
+
   static void updateAppWidget(
       Context context,
       AppWidgetManager appWidgetManager,
@@ -39,12 +42,13 @@ public class CCatWidget extends AppWidgetProvider {
     RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.c_cat_widget);
 
     Intent intent = new Intent(context, CCatWidget.class);
-    intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+    intent.setAction(ACTION_SIMPLEAPPWIDGET);
 
-    String number = String.format("%03d", (new Random().nextInt(900) + 100));
+    String number = String.format("%03d Number", (new Random().nextInt(900) + 100));
     remoteViews.setTextViewText(R.id.widgetTitleTxt, number);
 
-    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, number);
+    intent.putExtra(EXTRA_VAL, number);
+
     PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     remoteViews.setOnClickPendingIntent(R.id.widgetActionPlay, pendingIntent);
 
@@ -63,8 +67,10 @@ public class CCatWidget extends AppWidgetProvider {
   @Override
   public void onReceive(Context context, Intent intent) {
     super.onReceive(context, intent);
-    if (AppWidgetManager.ACTION_APPWIDGET_UPDATE.equals(intent.getAction())) {
-      String extrasVal = intent.getExtras().getString(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+    if (ACTION_SIMPLEAPPWIDGET.equals(intent.getAction())) {
+      playAudio(context, 0);
+
+      String extrasVal = intent.getExtras().getString(EXTRA_VAL);
       // Construct the RemoteViews object
       RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.c_cat_widget);
       views.setTextViewText(R.id.widgetAuthorTxt, extrasVal);
@@ -79,33 +85,38 @@ public class CCatWidget extends AppWidgetProvider {
 
   @Override
   public void onEnabled(Context context) {
-    /*mContext = context;
 
-    Intent playerIntent;
-    // Enter relevant functionality for when the first widget is created
-    //Check is service is active
-    if (!serviceBound) {
-      playerIntent = new Intent(mContext, MediaPlayerService.class);
-      //playerIntent.putExtra(Broadcast_MEDIA_URL_VALUE, audioIndex);
-      mContext.startService(playerIntent);
-      mContext.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-    } else {
-      // Service is active
-      // Send a broadcast to the service -> PLAY_NEW_AUDIO
-      playerIntent = new Intent(Broadcast_PLAY_NEW_AUDIO);
-      //broadcastIntent.putExtra(Broadcast_MEDIA_URL_VALUE, audioIndex);
-      mContext.sendBroadcast(playerIntent);
-    }*/
   }
 
   @Override
   public void onDisabled(Context context) {
     // Enter relevant functionality for when the last widget is disabled
-    /*if (serviceBound) {
+    if (serviceBound) {
       context.unbindService(serviceConnection);
       // service is active
       player.stopSelf();
-    }*/
+    }
+  }
+
+  private void playAudio(Context context, int audioIndex) {
+    // Enter relevant functionality for when the first widget is created
+    // Check is service is active
+    if (!serviceBound) {
+      Intent playerIntent = new Intent(context, MediaPlayerService.class);
+      //playerIntent.putExtra(Broadcast_MEDIA_URL_VALUE, audioIndex);
+      context.startService(playerIntent);
+      context.getApplicationContext().bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+    } else {
+      // Store the new audioIndex to SharedPreferences
+      StorageUtil storage = new StorageUtil(context.getApplicationContext());
+      storage.storeAudioIndex(0);
+
+      // Service is active
+      // Send a broadcast to the service -> PLAY_NEW_AUDIO
+      Intent broadcastIntent = new Intent(Broadcast_PLAY_NEW_AUDIO);
+      //broadcastIntent.putExtra(Broadcast_MEDIA_URL_VALUE, audioIndex);
+      context.sendBroadcast(broadcastIntent);
+    }
   }
 
   //Binding this Client to the AudioPlayer Service
