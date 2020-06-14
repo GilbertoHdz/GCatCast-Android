@@ -25,12 +25,13 @@ public class CCatWidget extends AppWidgetProvider {
 
   private MediaPlayerService player;
   static boolean serviceBound = false;
+  static boolean isPlay = false;
   private ArrayList<Audio> audioList; // List of available Audio files
-  private Context mContext;
 
-  private static final String ACTION_SIMPLEAPPWIDGET = "ACTION_BROADCASTWIDGETSAMPLE";
-  private static final String EXTRA_VAL = "EXTRA_BROADCASTWIDGETSAMPLE";
-
+  private static final String ACTION_PLAY = "ACTION_G_CAT_CAST_PLAY";
+  private static final String ACTION_NEXT = "ACTION_G_CAT_CAST_NEXT";
+  private static final String ACTION_PREV = "ACTION_G_CAT_CAST_PREV";
+  private static final String EXTRA_VAL = "EXTRA_G_CAT_CAST_EXTRA_VAL";
 
   static void updateAppWidget(
       Context context,
@@ -41,16 +42,29 @@ public class CCatWidget extends AppWidgetProvider {
     // Construct the RemoteViews object
     RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.c_cat_widget);
 
-    Intent intent = new Intent(context, CCatWidget.class);
-    intent.setAction(ACTION_SIMPLEAPPWIDGET);
+    Intent playIntent = new Intent(context, CCatWidget.class);
+    playIntent.setAction(ACTION_PLAY);
+
+    Intent nextIntent = new Intent(context, CCatWidget.class);
+    nextIntent.setAction(ACTION_NEXT);
+
+    Intent prevIntent = new Intent(context, CCatWidget.class);
+    prevIntent.setAction(ACTION_PREV);
 
     String number = String.format("%03d Number", (new Random().nextInt(900) + 100));
     remoteViews.setTextViewText(R.id.widgetTitleTxt, number);
 
-    intent.putExtra(EXTRA_VAL, number);
+    playIntent.putExtra(EXTRA_VAL, number);
 
-    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    PendingIntent pendingIntent;
+    pendingIntent = PendingIntent.getBroadcast(context, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     remoteViews.setOnClickPendingIntent(R.id.widgetActionPlay, pendingIntent);
+
+    pendingIntent = PendingIntent.getBroadcast(context, 0, prevIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    remoteViews.setOnClickPendingIntent(R.id.widgetActionPrev, pendingIntent);
+
+    pendingIntent = PendingIntent.getBroadcast(context, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    remoteViews.setOnClickPendingIntent(R.id.widgetActionNext, pendingIntent);
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
@@ -67,20 +81,36 @@ public class CCatWidget extends AppWidgetProvider {
   @Override
   public void onReceive(Context context, Intent intent) {
     super.onReceive(context, intent);
-    if (ACTION_SIMPLEAPPWIDGET.equals(intent.getAction())) {
-      playAudio(context, 0);
+    // Construct the RemoteViews object
+    RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.c_cat_widget);
 
-      String extrasVal = intent.getExtras().getString(EXTRA_VAL);
-      // Construct the RemoteViews object
-      RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.c_cat_widget);
-      views.setTextViewText(R.id.widgetAuthorTxt, extrasVal);
+    if (ACTION_NEXT.equals(intent.getAction())) {
+      remoteViews.setTextViewText(R.id.widgetAuthorTxt, "Next");
+    }
+
+    if (ACTION_PREV.equals(intent.getAction())) {
+      remoteViews.setTextViewText(R.id.widgetAuthorTxt, "Prev");
+    }
+
+    if (ACTION_PLAY.equals(intent.getAction())) {
+      playAudio(context, 0);
+    }
+
+    if (ACTION_PLAY.equals(intent.getAction())) {
+      isPlay = !isPlay;
+      if (isPlay) {
+        remoteViews.setImageViewResource(R.id.widgetActionPlay, R.drawable.exo_controls_pause);
+      } else {
+        remoteViews.setImageViewResource(R.id.widgetActionPlay, R.drawable.exo_controls_play);
+      }
+      remoteViews.setTextViewText(R.id.widgetAuthorTxt, "isPlay: " + isPlay);
+
       // This time we dont have widgetId. Reaching our widget with that way.
       ComponentName appWidget = new ComponentName(context, CCatWidget.class);
       AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
       // Instruct the widget manager to update the widget
-      appWidgetManager.updateAppWidget(appWidget, views);
+      appWidgetManager.updateAppWidget(appWidget, remoteViews);
     }
-
   }
 
   @Override
@@ -104,7 +134,7 @@ public class CCatWidget extends AppWidgetProvider {
     if (!serviceBound) {
       Intent playerIntent = new Intent(context, MediaPlayerService.class);
       //playerIntent.putExtra(Broadcast_MEDIA_URL_VALUE, audioIndex);
-      context.startService(playerIntent);
+      context.getApplicationContext().startService(playerIntent);
       context.getApplicationContext().bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     } else {
       // Store the new audioIndex to SharedPreferences
@@ -115,7 +145,7 @@ public class CCatWidget extends AppWidgetProvider {
       // Send a broadcast to the service -> PLAY_NEW_AUDIO
       Intent broadcastIntent = new Intent(Broadcast_PLAY_NEW_AUDIO);
       //broadcastIntent.putExtra(Broadcast_MEDIA_URL_VALUE, audioIndex);
-      context.sendBroadcast(broadcastIntent);
+      context.getApplicationContext().sendBroadcast(broadcastIntent);
     }
   }
 

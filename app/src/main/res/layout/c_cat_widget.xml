@@ -42,19 +42,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/exo_controls_previous" />
+        android:src="@drawable/exo_controls_previous" />
 
     <ImageView
         android:id="@+id/widgetActionPlay"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_gravity="center"
-        android:background="@drawable/exo_controls_play" />
+        android:src="@drawable/exo_controls_play" />
 
     <ImageView
         android:id="@+id/widgetActionNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/exo_controls_next" />
+        android:src="@drawable/exo_controls_next" />
 </LinearLayout>
