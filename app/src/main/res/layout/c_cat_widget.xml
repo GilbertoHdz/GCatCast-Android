@@ -1,18 +1,60 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#09C"
+    android:background="@color/colorOnBackground"
+    android:orientation="horizontal"
     android:padding="@dimen/widget_margin">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#bbDEDFDE"
+        android:layout_gravity="center"
+        android:layout_weight="10"
+        android:background="@color/colorOnSurface"
         android:orientation="vertical">
 
-        <ListView
-            android:id="@+id/widget_list"
+        <TextView
+            android:id="@+id/widgetTitleTxt"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </ListView>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:gravity="center_vertical"
+            android:text="Titulo"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="@color/colorBackground"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/widgetAuthorTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:gravity="center_vertical"
+            android:text="Author"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/colorBackground"
+            android:textSize="12sp" />
     </LinearLayout>
-</FrameLayout>
+
+    <ImageView
+        android:id="@+id/widgetActionPrev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/exo_controls_previous" />
+
+    <ImageView
+        android:id="@+id/widgetActionPlay"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:background="@drawable/exo_controls_play" />
+
+    <ImageView
+        android:id="@+id/widgetActionNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/exo_controls_next" />
+</LinearLayout>

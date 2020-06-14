@@ -10,6 +10,7 @@ import com.manitosdev.gcatcast.R;
 import com.manitosdev.gcatcast.ui.main.db.AppDatabase;
 import com.manitosdev.gcatcast.ui.main.db.entities.PlaylistEntity;
 import com.manitosdev.gcatcast.ui.main.features.common.models.PlaylistData;
+import com.manitosdev.gcatcast.ui.main.features.playlist.Audio;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ class CCatWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
   private List<PlaylistData> playlistItems = new ArrayList<>();
   private Context mContext;
   private AppDatabase mDb;
+  private ArrayList<Audio> audioList = new ArrayList<>();
 
   String[] list = {"Android", "Java", "Kotlin", "C++", "C#", "Python", "Ruby"};
 
@@ -49,8 +51,15 @@ class CCatWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
       @Override
       protected List<PlaylistData> doInBackground(Context... contexts) {
         AppDatabase database = AppDatabase.getInstance(mContext);
-        for (PlaylistEntity entity : database.playlistDao().loadPlaylist()) {
+        List<PlaylistEntity> savedPlaylist = database.playlistDao().loadPlaylist();
+        for (PlaylistEntity entity : savedPlaylist) {
+          PlaylistData playlist = PlaylistData.transformFromEntity(entity);
           playlistItems.add(PlaylistData.transformFromEntity(entity));
+          audioList.add(new Audio(playlist.getUrl(), playlist.getName(), playlist.getDesc(), playlist.getAuthor()));
+        }
+
+        if (savedPlaylist.size() <= 0) {
+          loadDefaultPlaylist();
         }
 
         return playlistItems;
@@ -101,5 +110,13 @@ class CCatWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
   @Override
   public boolean hasStableIds() {
     return true;
+  }
+
+  private void loadDefaultPlaylist() {
+    String defaultUrl = "http://media-podcast.open.ac.uk/feeds/greek-heroes/desktop-all/greekheroesaudio01.mp3";
+    String defaultName = "Achilles";
+    String defaultAuthor = "The Open University";
+    String defaultDesc = "The lowdown on what popular culture chooses to keep in its portrayals of the Greek hero Achilles … and what gets left out.";
+    audioList.add(new Audio(defaultUrl, defaultName, defaultAuthor, defaultDesc));
   }
 }
