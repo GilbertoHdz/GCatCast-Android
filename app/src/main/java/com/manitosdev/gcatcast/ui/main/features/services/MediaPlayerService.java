@@ -225,9 +225,6 @@ public class MediaPlayerService extends Service
       stopSelf();
     }
 
-    // get mediaUrl from intent
-    //_localMediaUrl = intent.getExtras().getString(Broadcast_MEDIA_URL_VALUE);
-
     // Request audio focus
     if (requestAudioFocus() == false) {
       // Could not gain focus
