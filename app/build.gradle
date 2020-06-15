@@ -52,6 +52,8 @@ dependencies {
 
     // Firebase SDK for Google Analytics
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    // AdMob
+    implementation 'com.google.firebase:firebase-ads:18.0.0'
 
     def room_version = "2.2.5"
     implementation "androidx.room:room-runtime:$room_version"

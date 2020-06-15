@@ -51,6 +51,8 @@ import java.util.Locale;
  */
 public class PlayerActivity extends AppCompatActivity {
 
+  public static final int PLAYER_REQUEST_CLOSE = 724;
+
   private static final String TAG = PlayerActivity.class.getSimpleName();
 
   public static final String ARG_RSS_FEED_URL = "playerActivity.feed.rss.url.value";

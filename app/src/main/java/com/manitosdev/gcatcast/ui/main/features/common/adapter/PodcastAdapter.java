@@ -130,7 +130,7 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             Intent intent = new Intent(mContext, PlayerActivity.class);
             intent.putExtra(PlayerActivity.ARG_RSS_FEED_URL, podcast.getRssUrl());
             intent.putExtra(PlayerActivity.ARG_RSS_FEED_THUMBNAIL_URL, podcast.getUrlImg());
-            mContext.startActivity(intent);
+            mContext.startActivityForResult(intent, PlayerActivity.PLAYER_REQUEST_CLOSE);
           } else {
             Log.w(TAG, "url not supported");
             // TODO(PENDING) here we will create a new popup screen with webview podcast
