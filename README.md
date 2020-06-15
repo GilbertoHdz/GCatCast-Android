@@ -18,6 +18,9 @@ GCat Cast is a open source project developed on android.
     * First prototype 
     * Full media and background services functionality
     * Persistence in DB and local storage
+    * Config Google Services
+    * Implement Firebase analytics
+    * AdMob with free flavor experience 
 
 ## Meta
 
