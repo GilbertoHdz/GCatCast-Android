@@ -44,7 +44,6 @@ android {
         }
         free {
             versionNameSuffix = 'free'
-            debuggable = false
             signingConfig signingConfigs.release
         }
     }

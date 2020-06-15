@@ -4,7 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -16,11 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GCat"
         android:usesCleartextTraffic="true">
-
         <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-3940256099942544~3347511713" />
 
         <receiver android:name=".ui.main.features.widget.CCatWidget">
             <intent-filter>
@@ -31,22 +32,20 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/c_cat_widget_info" />
         </receiver>
+
         <service
             android:name=".ui.main.features.widget.CCatWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
         <service android:name=".ui.main.features.services.MediaPlayerService" />
 
         <activity
             android:name=".ui.main.features.playlist.PlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/FullscreenTheme" />
-
         <activity
             android:name=".ui.main.features.playlist.PlayerV2Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/FullscreenTheme" />
-
         <activity android:name=".ui.main.features.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
