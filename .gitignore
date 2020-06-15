@@ -1,6 +1,9 @@
 # Created by https://www.gitignore.io/api/android,androidstudio
 # Edit at https://www.gitignore.io/?templates=android,androidstudio
 
+##GCat Cast ignoring
+keystore.properties
+
 ### Android ###
 # Built application files
 *.apk
