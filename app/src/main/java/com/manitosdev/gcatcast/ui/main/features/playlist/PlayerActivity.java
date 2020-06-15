@@ -30,6 +30,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.manitosdev.gcatcast.R;
 import com.manitosdev.gcatcast.ui.main.api.models.ApiResult;
 import com.manitosdev.gcatcast.ui.main.api.models.search.RssChannel;
@@ -83,9 +84,16 @@ public class PlayerActivity extends AppCompatActivity {
   private String rssFeedUrl;
   private String rssFeedThumbnailUrl;
 
+  private FirebaseAnalytics mFirebaseAnalytics;
+
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    // Obtain the FirebaseAnalytics instance.
+    mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
     setContentView(R.layout.activity_player);
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
@@ -476,6 +484,7 @@ public class PlayerActivity extends AppCompatActivity {
         currentPlaylistIndex = position;
         callPlaylistItem(rssItem.getUrl());
         changeItemToPlay(true, false);
+        registerPlayingEvent(rssItem.getUrl(), rssItem.getAuthor());
       }
 
       @Override
@@ -520,4 +529,11 @@ public class PlayerActivity extends AppCompatActivity {
       }
     }
   };
+
+  private void registerPlayingEvent(String url, String artist) {
+    Bundle params = new Bundle();
+    params.putString("podcast_url", url);
+    params.putString("podcast_artist", artist);
+    mFirebaseAnalytics.logEvent("player_playing", params);
+  }
 }

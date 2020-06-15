@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "3069409117",
+    "firebase_url": "https://gcat-cast.firebaseio.com",
+    "project_id": "gcat-cast",
+    "storage_bucket": "gcat-cast.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3069409117:android:45dbdba0a40cf9eb1a9ab4",
+        "android_client_info": {
+          "package_name": "com.manitosdev.gcatcast"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "3069409117-tg08lrc56gbe36tbkh1e4kitafjfbbj8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbXMmneoumwMVt9Q1oMZ9RP_8VPoI3Atc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "3069409117-tg08lrc56gbe36tbkh1e4kitafjfbbj8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
