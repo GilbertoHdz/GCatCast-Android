@@ -8,7 +8,7 @@
     android:padding="@dimen/widget_margin">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_weight="10"
@@ -43,19 +43,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/exo_controls_previous" />
+        android:src="@drawable/exo_controls_previous"
+        android:contentDescription="@string/player_content_desc_prev_track" />
 
     <ImageView
         android:id="@+id/widgetActionPlay"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_gravity="center"
-        android:src="@drawable/exo_controls_play" />
+        android:src="@drawable/exo_controls_play"
+        android:contentDescription="@string/player_content_desc_play_track" />
 
     <ImageView
         android:id="@+id/widgetActionNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/exo_controls_next" />
+        android:src="@drawable/exo_controls_next"
+        android:contentDescription="@string/player_content_desc_next_track" />
 </LinearLayout>

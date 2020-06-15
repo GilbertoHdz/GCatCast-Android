@@ -48,7 +48,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
+                app:srcCompat="@drawable/ic_favorite_border_black_24dp"
+                android:contentDescription="@string/player_content_desc_favorite_track" />
 
             <ImageView
                 android:id="@+id/playerShortActionQueue"
@@ -56,7 +57,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/ic_queue_music_black_24dp" />
+                app:srcCompat="@drawable/ic_queue_music_black_24dp"
+                android:contentDescription="@string/player_content_desc_enqueue_track" />
 
             <ImageView
                 android:id="@+id/playerShortActionShare"
@@ -64,7 +66,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/ic_share_black_24dp" />
+                app:srcCompat="@drawable/ic_share_black_24dp"
+                android:contentDescription="@string/player_content_desc_share_content" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
@@ -124,7 +127,8 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@id/payerViewPlayerlistActionPrev"
                 app:layout_constraintTop_toBottomOf="@id/payerViewPlayerlistActionSeek"
-                app:srcCompat="@drawable/exo_controls_play" />
+                app:srcCompat="@drawable/exo_controls_play"
+                android:contentDescription="@string/player_content_desc_play_track" />
 
             <ImageView
                 android:id="@+id/payerViewPlayerlistActionPrev"
@@ -136,7 +140,8 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/payerViewPlayerlistActionPlay"
-                app:srcCompat="@drawable/exo_controls_previous" />
+                app:srcCompat="@drawable/exo_controls_previous"
+                android:contentDescription="@string/player_content_desc_prev_track" />
 
             <ImageView
                 android:id="@+id/payerViewPlayerlistActionNext"
@@ -148,7 +153,8 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@id/payerViewPlayerlistActionPlay"
                 app:layout_constraintTop_toTopOf="@id/payerViewPlayerlistActionPlay"
-                app:srcCompat="@drawable/exo_controls_next" />
+                app:srcCompat="@drawable/exo_controls_next"
+                android:contentDescription="@string/player_content_desc_next_track" />
 
             <TextView
                 android:id="@+id/payerViewPlayerlistActionSeekStartValue"

@@ -14,6 +14,19 @@
     <string name="common_category_name">Category name</string>
     <string name="common_more">More</string>
     <string name="common_action_retry">Retry</string>
+    <string name="common_item_content_desc_thumbnail">Thumbnail of the podcast</string>
+    <string name="playlist_content_desc_info">Relevant information about of podcast</string>
+    <string name="playlist_content_desc_book_mark">Save you favorite podcast</string>
+    <string name="playlist_content_desc_thumbnail">Cover image of the current podcast</string>
+    <string name="common_content_desc_podcast_artist">Thumbnail of the podcast artist</string>
+    <string name="common_content_desc_info_about_podcast_artist">Relevant information about podcast artist</string>
+    <string name="content_desc_save_podcast_artist">Action for save the podcast of the artist</string>
+    <string name="player_content_desc_prev_track">Previous track</string>
+    <string name="player_content_desc_play_track">Play or Pause track</string>
+    <string name="player_content_desc_next_track">Next track</string>
+    <string name="player_content_desc_favorite_track">Favorite track</string>
+    <string name="player_content_desc_enqueue_track">Enqueue track</string>
+    <string name="player_content_desc_share_content">Share track</string>
 
     <!-- POPULAR -->
 

@@ -9,5 +9,18 @@
     <string name="common_category_name">Nombre Categoría</string>
     <string name="common_more">Más</string>
     <string name="common_action_retry">Re-intentar</string>
+    <string name="common_item_content_desc_thumbnail">Portada del podcast</string>
     <string name="subscribed_my_podcast">Mis Podcast subscritos</string>
+    <string name="playlist_content_desc_info">Informacion relevante acerca del podcast</string>
+    <string name="playlist_content_desc_book_mark">Guardar podcast a favoritos</string>
+    <string name="playlist_content_desc_thumbnail">Image de fondo del podcast</string>
+    <string name="common_content_desc_podcast_artist">Thumbnail del artisca del podcast</string>
+    <string name="common_content_desc_info_about_podcast_artist">Informacion delevante acerca del podcast</string>
+    <string name="content_desc_save_podcast_artist">Guardar podcast</string>
+    <string name="player_content_desc_prev_track">Pista previa</string>
+    <string name="player_content_desc_play_track">Reproducir o Pausar pista</string>
+    <string name="player_content_desc_next_track">Siguiente pista</string>
+    <string name="player_content_desc_favorite_track">Pista a favoritos</string>
+    <string name="player_content_desc_enqueue_track">Encolar pista</string>
+    <string name="player_content_desc_share_content">Compartir pista</string>
 </resources>

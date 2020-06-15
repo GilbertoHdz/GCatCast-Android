@@ -25,7 +25,8 @@
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/ic_launcher" />
+            app:srcCompat="@mipmap/ic_launcher"
+            android:contentDescription="@string/common_content_desc_podcast_artist" />
 
         <ImageView
             android:id="@+id/common_item_podcast_lg_info"
@@ -39,7 +40,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/common_item_podcast_lg_name"
             app:layout_constraintTop_toTopOf="@id/common_item_podcast_lg_marker"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            android:contentDescription="@string/common_content_desc_info_about_podcast_artist" />
 
         <ImageView
             android:id="@+id/common_item_podcast_lg_marker"
@@ -52,7 +54,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/common_item_podcast_lg_info"
-            app:layout_constraintTop_toTopOf="@id/common_item_podcast_lg_thumbnail" />
+            app:layout_constraintTop_toTopOf="@id/common_item_podcast_lg_thumbnail"
+            android:contentDescription="@string/content_desc_save_podcast_artist" />
 
         <TextView
             android:id="@+id/common_item_podcast_lg_name"
