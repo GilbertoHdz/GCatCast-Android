@@ -2,22 +2,40 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-// Create a variable called keystorePropertiesFile, and initialize it to your
-// keystore.properties file, in the rootProject folder.
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-// Initialize a new Properties() object called keystoreProperties.
-def keystoreProperties = new Properties()
-// Load your keystore.properties file into the keystoreProperties object.
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
+def PROJECT_keyAlias
+def PROJECT_keyPassword
+def PROJECT_storeFile
+def PROJECT_storePassword
+
+if (rootProject.isBitriseBuild) {
+    PROJECT_keyAlias = System.getenv("KEY_ALIAS")
+    PROJECT_keyPassword = System.getenv("KEY_PASSWORD")
+    PROJECT_storeFile = System.getenv("STORE_FILE")
+    PROJECT_storePassword = System.getenv("STORE_PASSWORD")
+
+} else {
+    // Create a variable called keystorePropertiesFile, and initialize it to your
+    // keystore.properties file, in the rootProject folder.
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    // Initialize a new Properties() object called keystoreProperties.
+    def keystoreProperties = new Properties()
+    // Load your keystore.properties file into the keystoreProperties object.
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+    PROJECT_keyAlias = keystoreProperties['keyAlias']
+    PROJECT_keyPassword = keystoreProperties['keyPassword']
+    PROJECT_storeFile = file(keystoreProperties['storeFile'])
+    PROJECT_storePassword = keystoreProperties['storePassword']
+}
 
 android {
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+            keyAlias PROJECT_keyAlias
+            keyPassword PROJECT_keyPassword
+            storeFile file(PROJECT_storeFile)
+            storePassword PROJECT_storePassword
         }
     }
     useLibrary 'org.apache.http.legacy'
