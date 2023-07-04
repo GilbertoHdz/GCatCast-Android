@@ -1,5 +1,7 @@
 package com.manitosdev.gcatcast.ui.main.features.subscribed;
 
+import android.util.Log;
+import android.view.Menu;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -23,7 +25,11 @@ import com.manitosdev.gcatcast.ui.main.features.common.models.SmPodcast;
 import com.manitosdev.gcatcast.ui.main.features.main.MainViewModel;
 import com.manitosdev.gcatcast.ui.main.features.playlist.PlaylistAdapter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class SubscribedFragment extends Fragment {
 
@@ -64,6 +70,13 @@ public class SubscribedFragment extends Fragment {
     mSubscribedAdapter = new PodcastAdapter(requireActivity(), mDb);
     mSubscribedPlaylistAdapter = new PlaylistAdapter(actionCallback());
     initializeRecycler(view);
+    MenuRadioGroup radio = view.findViewById(R.id.radioSelectionGroup);
+    radio.setDataSource(MenuType.PLAYBACK_RATES, Arrays.asList("Gilinho", "Dante", "Rolo", "Bruno", "Raknar"), new MenuSelectionChangedListener() {
+      @Override
+      public void onMenuItemSelected(MenuType menuType, int index, int id) {
+        Log.i("GILS", index + "");
+      }
+    }, 3);
   }
 
   private void initializeRecycler(View view) {

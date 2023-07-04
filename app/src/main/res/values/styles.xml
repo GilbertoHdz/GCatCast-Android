@@ -47,4 +47,16 @@
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
     </style>
+
+    <style name="MenuRadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:layout_width">523px</item>
+        <item name="android:layout_height">62px</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:background">@drawable/custom_button_states</item>
+        <item name="android:button">@drawable/white_dot_button_states</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">30px</item>
+        <item name="android:textStyle">normal</item>
+        <!--item name="android:fontFamily">@font/open_sans</item-->
+    </style>
 </resources>

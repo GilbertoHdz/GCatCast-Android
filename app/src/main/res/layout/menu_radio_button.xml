@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MenuRadioButton"
+    android:checked="false"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:text="Option 1"
+    tools:checked="true">
+
+</RadioButton>

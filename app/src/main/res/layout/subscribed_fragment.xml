@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.features.subscribed.SubscribedFragment">
 
+    <com.manitosdev.gcatcast.ui.main.features.subscribed.MenuRadioGroup
+        android:id="@+id/radioSelectionGroup"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorErrorInverse"
+        app:layout_constraintBottom_toBottomOf="@+id/subscribedPlaylistSectionRecycler"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subscribedPlaylistSectionTitle" />
+
     <TextView
         android:id="@+id/subscribedPlaylistSectionTitle"
         android:layout_width="0dp"
@@ -24,6 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/subscribedPodcastSectionTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.3"
