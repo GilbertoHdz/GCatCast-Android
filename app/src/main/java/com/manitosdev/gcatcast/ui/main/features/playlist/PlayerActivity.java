@@ -15,6 +15,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -70,6 +72,7 @@ public class PlayerActivity extends AppCompatActivity {
   private boolean isPlaying = false;
   private int currentPlaylistIndex;
 
+  private TextView _dvrPositionLabel;
   private TextView _error_message;
   private ProgressBar _loader;
   private Button _retry;
@@ -105,6 +108,8 @@ public class PlayerActivity extends AppCompatActivity {
     // Initial instances
     mDb = AppDatabase.getInstance(PlayerActivity.this);
     mPlaylistAdapter = new PlaylistAdapter(actionCallback());
+
+    _dvrPositionLabel = (TextView) findViewById(R.id.dvr_position_label);
 
     playerView = (PlayerView) findViewById(R.id.playerViewWidgetContainer);
     _error_message = (TextView) findViewById(R.id.player_view_error_message_text);
@@ -364,6 +369,16 @@ public class PlayerActivity extends AppCompatActivity {
           // the progress bar's position.
           return;
         }
+
+        double duration = _seekProgress.getMax();
+        ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.payerViewPlayerlistElementsGroup);
+        ConstraintSet cs = new ConstraintSet();
+        cs.clone(cl);
+        double posit = progress / duration;
+        cs.setHorizontalBias(R.id.dvr_position_label, (float) posit);
+        cs.applyTo(cl);
+
+        _dvrPositionLabel.setText(progress + "");
 
         exoPlayer.seekTo(progress * 1000);
       }
