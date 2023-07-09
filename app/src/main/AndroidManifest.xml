@@ -23,7 +23,7 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />
 
-        <receiver android:name=".ui.main.features.widget.CCatWidget">
+        <receiver android:name=".features.widget.CCatWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -34,19 +34,19 @@
         </receiver>
 
         <service
-            android:name=".ui.main.features.widget.CCatWidgetService"
+            android:name=".features.widget.CCatWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service android:name=".ui.main.features.services.MediaPlayerService" />
+        <service android:name=".features.services.MediaPlayerService" />
 
         <activity
-            android:name=".ui.main.features.playlist.PlayerActivity"
+            android:name=".features.playlist.PlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/FullscreenTheme" />
         <activity
-            android:name=".ui.main.features.playlist.PlayerV2Activity"
+            android:name=".features.playlist.PlayerV2Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/FullscreenTheme" />
-        <activity android:name=".ui.main.features.main.MainActivity">
+        <activity android:name=".features.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
