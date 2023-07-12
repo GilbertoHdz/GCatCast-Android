@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.features.subscribed.SubscribedFragment">
+    tools:context=".features.subscribed.SubscribedFragment">
 
-    <com.manitosdev.gcatcast.ui.main.features.subscribed.MenuRadioGroup
+    <com.manitosdev.gcatcast.features.subscribed.MenuRadioGroup
         android:id="@+id/radioSelectionGroup"
         android:layout_width="0dp"
         android:layout_height="0dp"
