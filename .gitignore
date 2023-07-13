@@ -3,6 +3,7 @@
 
 ##GCat Cast ignoring
 keystore.properties
+app/google-services.json
 
 ### Android ###
 # Built application files
