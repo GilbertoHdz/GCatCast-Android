@@ -1,4 +1,4 @@
-package com.manitosdev.gcatcast.ui.main.features.main;
+package com.manitosdev.gcatcast.features.main;
 
 import android.content.Intent;
 import android.util.Log;
@@ -12,12 +12,12 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.tabs.TabLayout;
 import com.manitosdev.gcatcast.R;
-import com.manitosdev.gcatcast.ui.main.features.playlist.PlayerActivity;
+import com.manitosdev.gcatcast.features.playlist.PlayerActivity;
 
 
 public class MainActivity extends AppCompatActivity {
 
-  private static final String TAG = com.manitosdev.gcatcast.ui.main.features.main.MainActivity.class.getSimpleName();
+  private static final String TAG = com.manitosdev.gcatcast.features.main.MainActivity.class.getSimpleName();
 
   private InterstitialAd mInterstitialAd;
 
