@@ -21,7 +21,6 @@ app/google-services.json
 bin/
 gen/
 out/
-release/
 
 # Gradle files
 .gradle/
