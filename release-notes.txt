@@ -1,5 +1,3 @@
-Version 1.0.0
-
 - Display podcast
 - Save favorite podcast
 - Watch videos from podcast
